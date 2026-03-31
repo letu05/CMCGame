@@ -26,6 +26,9 @@ TagManager:
   - Flag
   - Gate
   - Pill
+  - PointItem
+  - PlayerSmall
+  - PlayerBig
   layers:
   - Default
   - TransparentFX

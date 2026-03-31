@@ -1,0 +1,11 @@
+Converting script [1 / 1]	[\Scripts\Player\PlayerController.cs]
+	Fragments : 2
+		[ 0] : Line:   42	InputMethod   GetButtonDown       	("Jump")
+		[ 1] : Line:   53	InputMethod   GetAxisRaw          	("Horizontal")
+
+
+1 scripts modified!
+Overwriting actual scripts...
+	[0 / 1] from  [C:/unity/gamDoan/CF2-Data/Script-Backups/2026-03-30-21-07\Assets-After/\Scripts\Player\PlayerController.cs] to [C:/unity/gamDoan/Assets/\Scripts\Player\PlayerController.cs]
+
+Overwriting COMPLETED!
