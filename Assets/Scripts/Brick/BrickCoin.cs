@@ -177,8 +177,8 @@ public class BrickCoin : MonoBehaviour
 
         if (coin == null) yield break;
 
-        // === AUTO-COLLECT: Hủy coin sau animation, coi như đã ăn ===
-        // Đây là cách Mario thật hoạt động — coin pop = đã thu ngay
+        // === AUTO-COLLECT: Cộng coin + hủy sau animation ===
+        GameManager.Instance?.AddCoin();
         Destroy(coin);
     }
 }

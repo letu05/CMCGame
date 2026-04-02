@@ -115,7 +115,6 @@ private void Jump()
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse); // Dùng JumpForce (property) thay vì jumpForce (field)
-            Debug.Log($"[Jump] JumpForce hiện tại: {JumpForce}");
             if (animator != null)
             {
                 animator.SetTrigger("jumpTrigger");
