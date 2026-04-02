@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 212724804207875695}
   - component: {fileID: 58618682377417806}
   - component: {fileID: 95703437598541787}
-  m_Layer: 16
+  - component: {fileID: -7038277227443241638}
+  m_Layer: 0
   m_Name: Coin
   m_TagString: Coin
   m_Icon: {fileID: 0}
@@ -151,3 +152,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-7038277227443241638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709254077376921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045442f04b28d1842965ca28b184c741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Coin
+  coinSound: {fileID: 8300000, guid: 66b5b6be99bbaba45b4c660483613b30, type: 3}

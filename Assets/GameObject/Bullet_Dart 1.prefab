@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4773660920482840703}
   - component: {fileID: 3132610510926194676}
   m_Layer: 0
-  m_Name: Bullet_Dart
+  m_Name: Bullet_Dart 1
   m_TagString: CharacterBulletThrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

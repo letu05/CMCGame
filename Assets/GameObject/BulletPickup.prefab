@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 50618682377417806}
   - component: {fileID: 61703437598541787}
   - component: {fileID: 95884547391421755}
+  - component: {fileID: -251079602869361286}
   m_Layer: 16
   m_Name: BulletPickup
   m_TagString: CharacterBulletPickup
@@ -130,6 +131,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-251079602869361286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709254077376921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 603704b4f7426e549bae3f4392c1a56e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bullet
+  bulletType: 0
+  speed: 12
+  lifetime: 4
+  damage: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  arcHeight: 3
+  bombDetectRadius: 2.5
+  returnDelay: 0.35
+  rotateSpeed: 540
 --- !u!1 &1730242686860875
 GameObject:
   m_ObjectHideFlags: 0

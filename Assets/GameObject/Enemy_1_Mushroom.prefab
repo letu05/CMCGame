@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 50618682377417806}
   - component: {fileID: 95709867586078768}
   - component: {fileID: 61025901758691103}
-  m_Layer: 17
+  - component: {fileID: 7398730764410102407}
+  m_Layer: 9
   m_Name: Enemy_1_Mushroom
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -130,6 +131,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.55, y: 0.5749082}
   m_EdgeRadius: 0
+--- !u!114 &7398730764410102407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709254077376921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19192aef651d2934090ecbda644b30e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAl
+  moveSpeed: 2
+  leftPoint: {fileID: 0}
+  rightPoint: {fileID: 0}
 --- !u!1 &1730242686860875
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +156,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4705390221481576}
   - component: {fileID: 212977153420339851}
-  m_Layer: 17
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
