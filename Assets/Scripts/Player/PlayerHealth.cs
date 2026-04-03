@@ -2,26 +2,29 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour, IcanTakeDamage
 {
-    [SerializeField] private int maxHealth = 3;
-    private int currentHealth;
+    private Animator anim;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        anim = GetComponentInChildren<Animator>();
     }
 
+    // Gọi từ PlayerPowerUp mỗi khi đổi model (big/small)
+    public void SetAnimator(Animator newAnimator)
+    {
+        anim = newAnimator;
+    }
+
+    // Được gọi từ PlayerPowerUp khi player trạng thái thường bị enemy tấn công
     public void TakeDamage(int damageAmount)
     {
-        currentHealth -= damageAmount;
-        Debug.Log($"[PlayerHealth] Player bị {damageAmount} sát thương. HP còn: {currentHealth}/{maxHealth}");
-
-        if (currentHealth <= 0)
-            Die();
+        Die();
     }
 
-    private void Die()
+    public void Die()
     {
         Debug.Log("[PlayerHealth] Player đã chết.");
-        // TODO: game over, animation, v.v.
+        anim?.SetTrigger("Die");
+        // TODO: game over, v.v.
     }
 }

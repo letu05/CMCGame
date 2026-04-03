@@ -127,7 +127,10 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
-  arcRadius: 13
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  arcRadius: 35
   bombDetectRadius: 1.5
   groundLayer:
     serializedVersion: 2

@@ -27,8 +27,8 @@ public class EnemyHealth : MonoBehaviour, IcanTakeDamage
 
     private void Die()
     {
-        Debug.Log($"[EnemyHealth] {gameObject.name} đã chết.");
-        // TODO: thêm animation chết, điểm, effect tuỳ project
+        Debug.Log($"[EnemyHealth] {gameObject.name} đã chết. +{score} điểm!");
+        GameManager.Instance?.AddScore(score);
         Destroy(gameObject);
     }
 

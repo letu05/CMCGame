@@ -187,10 +187,16 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
-  arcHeight: 3
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  arcRadius: 3
   bombDetectRadius: 2.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
   returnDelay: 0.35
-  rotateSpeed: 540
+  rotateSpeed: 370
 --- !u!114 &3132610510926194676
 MonoBehaviour:
   m_ObjectHideFlags: 0

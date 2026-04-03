@@ -10,9 +10,12 @@ public class PlayerPowerUp : MonoBehaviour
     [SerializeField]
     private GameObject PlayerBig;
     private PlayerController playerController;
+    private PlayerHealth playerHealth;
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
+        playerHealth     = GetComponentInChildren<PlayerHealth>(true);
+        Debug.Log($"[PlayerPowerUp] playerHealth = {(playerHealth == null ? "NULL !!!" : playerHealth.ToString())}");
         // Nếu Find không ra thì lấy từ inspector
         if (PlayerSmall == null) PlayerSmall = transform.Find("PlayerSmall").gameObject;
         if (PlayerBig == null) PlayerBig = transform.Find("PlayerBig").gameObject;
@@ -60,6 +63,7 @@ public class PlayerPowerUp : MonoBehaviour
         {
             Animator newAnimator = activeModel.GetComponentInChildren<Animator>();
             playerController.SetAnimator(newAnimator);
+            playerHealth?.SetAnimator(newAnimator); // đồng bộ animator cho PlayerHealth
         }
 
         // Bạn có thể cần phải thay đổi offset/size của BoxCollider2D bên PlayerController tương ứng với model.
@@ -105,7 +109,10 @@ public class PlayerPowerUp : MonoBehaviour
             }
             else
             {
-                Debug.Log("Mario Died!");
+                // Trạng thái thường bị enemy chạm → chết
+                // Sự kiện die do PlayerHealth quản lý
+                Debug.Log("[PlayerPowerUp] Player trạng thái thường bị chạm → gọi Die!");
+                playerHealth?.Die();
             }
         }
     }

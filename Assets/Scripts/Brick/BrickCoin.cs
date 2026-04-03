@@ -12,7 +12,9 @@ public class BrickCoin : MonoBehaviour
 {
     [Header("Coin Settings")]
     [Tooltip("Số coin mỗi lần đập (hiện tại spawn 1 coin mỗi lần đập cho đến hết)")]
-    public int coinAmount = 1;
+    public int coinAmount = 3;
+    [Tooltip("Số điểm score mỗi lần đập")]      
+    public int coinScore = 10;
     [Tooltip("Prefab của coin sẽ pop ra")]
     public GameObject coinPrefab;
     [Tooltip("Âm thanh khi coin bật ra")]
@@ -98,6 +100,9 @@ public class BrickCoin : MonoBehaviour
         // Chạy bump animation + spawn coin cùng lúc
         StartCoroutine(BumpAnimation());
         StartCoroutine(SpawnCoinEffect());
+
+        // Cộng điểm
+        GameManager.Instance?.AddScore(coinScore);
 
         // Phát âm thanh
         if (coinSound != null)

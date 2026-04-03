@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &235459359795455616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6426777419774286972}
+  m_Layer: 0
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6426777419774286972
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235459359795455616}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.77, y: 0.48, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6912580710417518633}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1087827003901408026
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +387,7 @@ GameObject:
   - component: {fileID: 6351491345286419738}
   - component: {fileID: 3892267866800113}
   - component: {fileID: 5474960899680407694}
+  - component: {fileID: 6944070535008780182}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -379,6 +411,7 @@ Transform:
   - {fileID: 1799236696142954831}
   - {fileID: 1865886965840735170}
   - {fileID: 8610062923365210623}
+  - {fileID: 6426777419774286972}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4024219071577703126
@@ -475,6 +508,10 @@ MonoBehaviour:
     m_Bits: 128
   groundRayLength: 0.15
   groundRayInset: 0.05
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  stompBounce: 8
 --- !u!114 &3892267866800113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,8 +542,21 @@ MonoBehaviour:
   bombPrefab: {fileID: 1709254077376921, guid: 7076f996689f57e408bb581508cdc6e0, type: 3}
   dartPrefab: {fileID: 1709254077376921, guid: 551e566e9272ba9488f8800e837c0543, type: 3}
   boomerangPrefab: {fileID: 0}
-  firePoint: {fileID: 0}
+  firePoint: {fileID: 6426777419774286972}
   fireCooldown: 0.4
   startBombAmmo: 5
   startDartAmmo: 10
   startBoomerangAmmo: 5
+  currentType: 0
+--- !u!114 &6944070535008780182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046290163406821393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f0d2f76a1ed3df4f83bebd539f23f7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
