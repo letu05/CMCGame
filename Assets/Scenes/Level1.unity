@@ -144,7 +144,7 @@ Transform:
   m_GameObject: {fileID: 38221146}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.53, y: -1.66, z: 0}
+  m_LocalPosition: {x: 33.05, y: -1.66, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -828,6 +828,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4618682377417806, guid: 6ed236305f181ca48adcfacd36167980, type: 3}
   m_PrefabInstance: {fileID: 933402115}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &278369435 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1709254077376921, guid: ece1f1f7043c5004882adb4381b3d537, type: 3}
+  m_PrefabInstance: {fileID: 1886648125}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &278369440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278369435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b6915505b5f5f640acf5a25c5ff2fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHp: 1
+  score: 10
 --- !u!1 &306697719
 GameObject:
   m_ObjectHideFlags: 0
@@ -8411,7 +8430,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1709254077376921, guid: ece1f1f7043c5004882adb4381b3d537, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 278369440}
   m_SourcePrefab: {fileID: 100100000, guid: ece1f1f7043c5004882adb4381b3d537, type: 3}
 --- !u!1001 &1903091362
 PrefabInstance:
@@ -16868,6 +16890,14 @@ PrefabInstance:
       propertyPath: firePoint
       value: 
       objectReference: {fileID: 306697720}
+    - target: {fileID: 5474960899680407694, guid: f8bb9d02b9c95ee4394ebc1ebab5caf0, type: 3}
+      propertyPath: currentType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6351491345286419738, guid: f8bb9d02b9c95ee4394ebc1ebab5caf0, type: 3}
+      propertyPath: enemyLayer.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 6912580710417518633, guid: f8bb9d02b9c95ee4394ebc1ebab5caf0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.17
