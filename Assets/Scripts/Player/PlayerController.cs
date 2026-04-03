@@ -104,9 +104,8 @@ private void Moved()
 
 private void UpdateAnimations()
     {
-        if (animator != null)
+        if (animator != null && animator.runtimeAnimatorController != null)
         {
-            
             animator.SetFloat("speed", Mathf.Abs(rb.linearVelocity.x));
             animator.SetBool("isGrounded", isGrounded);
             animator.SetFloat("yVelocity", rb.linearVelocity.y);
@@ -118,7 +117,7 @@ private void Jump()
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse); 
-            if (animator != null)
+            if (animator != null && animator.runtimeAnimatorController != null)
             {
                 animator.SetTrigger("jumpTrigger");
             }
@@ -128,7 +127,7 @@ private void Jump()
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(new Vector2(0f, doubleJumpForce), ForceMode2D.Impulse);
             canDoubleJump = false;
-            if (animator != null)
+            if (animator != null && animator.runtimeAnimatorController != null)
             {
                 animator.SetTrigger("jumpTrigger"); 
             }

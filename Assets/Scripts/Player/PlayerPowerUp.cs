@@ -2,79 +2,104 @@ using UnityEngine;
 
 public class PlayerPowerUp : MonoBehaviour
 {
+    [Header("4 Model nhân vật")]
+    [SerializeField] private GameObject modelSmall;         
+    [SerializeField] private GameObject modelBig;           
+    [SerializeField] private GameObject modelSmallShield;   
+    [SerializeField] private GameObject modelBigShield;     
 
-    [SerializeField]
-    private float jumpForceAdditional = 5f; // Lực nhảy thêm khi bự
-    [SerializeField]
-    private GameObject PlayerSmall;
-    [SerializeField]
-    private GameObject PlayerBig;
+    [Header("Cài đặt")]
+    [SerializeField] private float jumpForceAdditional = 5f;
+    [SerializeField] private float shieldDuration      = 3f;
+
+    // Trạng thái
+    public bool IsBig      { get; private set; } = false;
+    public bool IsShielded { get; private set; } = false;
+
+    private float shieldTimer = 0f;
+
     private PlayerController playerController;
-    private PlayerHealth playerHealth;
-    private PlayerShield playerShield;
+    private PlayerHealth     playerHealth;
+
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
         playerHealth     = GetComponentInChildren<PlayerHealth>(true);
-        playerShield     = GetComponent<PlayerShield>();
-        Debug.Log($"[PlayerPowerUp] playerHealth = {(playerHealth == null ? "NULL !!!" : playerHealth.ToString())}");
-        // Nếu Find không ra thì lấy từ inspector
-        if (PlayerSmall == null) PlayerSmall = transform.Find("PlayerSmall").gameObject;
-        if (PlayerBig == null) PlayerBig = transform.Find("PlayerBig").gameObject;
-
-        // Bắt đầu game với hình dạng nhỏ
-        SetPlayerState(isBig: false);
+        UpdateModel();
     }
 
-    // Biến trạng thái
-    public bool isPowerUpBig { get; private set; } = false;
+    private void Update()
+    {
+        if (!IsShielded) return;
 
-    // Hàm gọi khi ăn nấm
+        shieldTimer -= Time.deltaTime;
+        if (shieldTimer <= 0f)
+        {
+            IsShielded = false;
+            UpdateModel();
+            Debug.Log("[PlayerPowerUp] Shield hết hiệu lực.");
+        }
+    }
+
+    
+
+    
+    public void ActivateShield()
+    {
+        IsShielded  = true;
+        shieldTimer = shieldDuration;
+        UpdateModel();
+        Debug.Log($"[PlayerPowerUp] Shield bật! {shieldDuration}s");
+    }
+
+    // ─── PowerUp ──────────────────────────────────────────────────────────────
+
+    // Gọi khi ăn nấm (to lên)
     public void GrowBig()
     {
-        if (!isPowerUpBig)
-        {
-            playerController.JumpForce += jumpForceAdditional; // Tăng lực nhảy khi to lên
-            SetPlayerState(isBig: true);
-            // Thêm hạt (Particle) hoặc Animation khựng lại/đứng hình giống Mario ở đây
-        }
+        if (IsBig) return;
+        IsBig = true;
+        playerController.JumpForce += jumpForceAdditional;
+        UpdateModel();
     }
 
-    // Hàm gọi khi bị quái chạm vào lúc đang bự
+    // Gọi khi bị enemy chạm lúc đang to
     public void ShrinkSmall()
     {
-        if (isPowerUpBig)
-        {
-            playerController.JumpForce -= jumpForceAdditional; // Trừ đi lực nhảy khi bé lại
-            SetPlayerState(isBig: false);
-            // Thêm hiệu ứng nhấp nháy bất tử tạm thời (Invulnerability frames) ở đây
-        }
+        if (!IsBig) return;
+        IsBig = false;
+        playerController.JumpForce -= jumpForceAdditional;
+        UpdateModel();
     }
 
-    // Xử lý bật/tắt đúng model nhân vật
-    private void SetPlayerState(bool isBig)
-    {
-        isPowerUpBig = isBig;
-        if (PlayerSmall != null) PlayerSmall.SetActive(!isBig);
-        if (PlayerBig != null) PlayerBig.SetActive(isBig);
+    // ─── Core ─────────────────────────────────────────────────────────────────
 
-        // Sau khi đổi model, cập nhật lại Animator cho PlayerController
-        // vì Animator nằm trong child object nên phải lấy lại từ model đang active
-        GameObject activeModel = isBig ? PlayerBig : PlayerSmall;
+    // Chỉ bật đúng 1 trong 4 model dựa vào (IsBig, IsShielded)
+    private void UpdateModel()
+    {
+        if (modelSmall)        modelSmall.SetActive       (!IsBig && !IsShielded);
+        if (modelBig)          modelBig.SetActive         ( IsBig && !IsShielded);
+        if (modelSmallShield)  modelSmallShield.SetActive (!IsBig &&  IsShielded);
+        if (modelBigShield)    modelBigShield.SetActive   ( IsBig &&  IsShielded);
+
+        // Đồng bộ Animator theo model đang active
+        GameObject activeModel = IsBig
+            ? (IsShielded ? modelBigShield   : modelBig)
+            : (IsShielded ? modelSmallShield : modelSmall);
+
         if (activeModel != null)
         {
-            Animator newAnimator = activeModel.GetComponentInChildren<Animator>();
-            playerController.SetAnimator(newAnimator);
-            playerHealth?.SetAnimator(newAnimator); // đồng bộ animator cho PlayerHealth
+            Animator anim = activeModel.GetComponentInChildren<Animator>();
+            playerController.SetAnimator(anim);
+            playerHealth?.SetAnimator(anim);
         }
-
-       
     }
 
-    // Xử lý va chạm vật lý
+    // ─── Va chạm ──────────────────────────────────────────────────────────────
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Khi ăn nấm
+        // Ăn nấm
         if (collision.CompareTag("PointItem"))
         {
             GrowBig();
@@ -82,45 +107,40 @@ public class PlayerPowerUp : MonoBehaviour
             return;
         }
 
-        // Khi chạm địch
+        // Chạm địch
         if (collision.CompareTag("Enemy"))
         {
-            // ── Kiểm tra Shield: nếu đang được bảo vệ → bỏ qua hoàn toàn ────
-            if (playerShield != null && playerShield.IsShielded)
+            // Shield đang bật → miễn sát thương
+            if (IsShielded)
             {
-                Debug.Log("[PlayerPowerUp] Shield đang bật → miễn sát thương từ enemy.");
+                Debug.Log("[PlayerPowerUp] Shield đang bật → miễn sát thương.");
                 return;
             }
 
-            // ── Kiểm tra stomp: player đang rơi + chạm đỉnh enemy ────────────
-            Rigidbody2D rb      = GetComponent<Rigidbody2D>();
-            Collider2D playerCol = GetComponent<Collider2D>();
+            // Stomp: player rơi xuống + chạm đỉnh enemy
+            Rigidbody2D rb        = GetComponent<Rigidbody2D>();
+            Collider2D  playerCol = GetComponent<Collider2D>();
 
-            if (rb != null && playerCol != null && rb.linearVelocity.y < 0f
+            if (rb != null && playerCol != null
+                && rb.linearVelocity.y < 0f
                 && playerCol.bounds.min.y >= collision.bounds.center.y)
             {
-                // ── STOMP: giết enemy + nảy lên ──────────────────────────────
                 EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
                 if (enemyHealth != null)
                 {
                     enemyHealth.Stomp();
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x,
-                        playerController.JumpForce * 0.7f);   // nảy lên ~70% jump
-                    Debug.Log($"[PlayerPowerUp] Stomp '{collision.name}' → chết + nảy lên!");
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, playerController.JumpForce * 0.7f);
+                    Debug.Log($"[PlayerPowerUp] Stomp '{collision.name}'!");
                 }
-                return; // không nhận damage
+                return;
             }
 
-            // ── Va chạm bình thường từ hướng khác ────────────────────────────
-            if (isPowerUpBig)
-            {
+            
+            if (IsBig)
                 ShrinkSmall();
-            }
             else
             {
-                // Trạng thái thường bị enemy chạm → chết
-                // Sự kiện die do PlayerHealth quản lý
-                Debug.Log("[PlayerPowerUp] Player trạng thái thường bị chạm → gọi Die!");
+                Debug.Log("[PlayerPowerUp] Player nhỏ bị chạm → Die!");
                 playerHealth?.Die();
             }
         }
