@@ -8,7 +8,7 @@ public class EnemyHealth : MonoBehaviour, IcanTakeDamage
 {
     [SerializeField] private int maxHp = 3;
     private int currentHp;
-
+    [SerializeField] private int score = 10;
     private void Start()
     {
         currentHp = maxHp;
@@ -30,5 +30,12 @@ public class EnemyHealth : MonoBehaviour, IcanTakeDamage
         Debug.Log($"[EnemyHealth] {gameObject.name} đã chết.");
         // TODO: thêm animation chết, điểm, effect tuỳ project
         Destroy(gameObject);
+    }
+
+    /// <summary>Bị player giẫm lên đầu → chết ngay.</summary>
+    public void Stomp()
+    {
+        Debug.Log($"[EnemyHealth] {gameObject.name} bị giẫm → chết ngay!");
+        Die();
     }
 }

@@ -83,7 +83,6 @@ public class BrickCoin : MonoBehaviour
         TriggerBrick();
     }
 
-    // ─── Logic chính ─────────────────────────────────────────────────
 
     private void TriggerBrick()
     {
@@ -147,7 +146,11 @@ public class BrickCoin : MonoBehaviour
         Vector3 spawnPos = originalPosition + Vector3.up * 0.6f;
         GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
 
-        // Tắt hoàn toàn vật lý và trigger — coin chỉ là hiệu ứng hình ảnh
+        // Tắt hoàn toàn vật lý, trigger và script Coin
+        // (BrickCoin tự xử lý AddCoin — không để Coin.cs gọi AddCoin(1))
+        Coin coinScript = coin.GetComponent<Coin>();
+        if (coinScript != null) coinScript.enabled = false;
+
         Collider2D coinCollider = coin.GetComponent<Collider2D>();
         Rigidbody2D coinRb = coin.GetComponent<Rigidbody2D>();
         if (coinRb != null) coinRb.simulated = false;
@@ -177,8 +180,8 @@ public class BrickCoin : MonoBehaviour
 
         if (coin == null) yield break;
 
-        // === AUTO-COLLECT: Cộng coin + hủy sau animation ===
-        GameManager.Instance?.AddCoin();
+        int coinValue = Random.Range(10, 16); // 10 đến 15 (inclusive)
+        GameManager.Instance?.AddCoin(coinValue);
         Destroy(coin);
     }
 }

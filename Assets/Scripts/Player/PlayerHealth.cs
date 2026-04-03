@@ -1,18 +1,27 @@
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IcanTakeDamage
 {
-    [SerializeField] private int maxHealth = 3; 
+    [SerializeField] private int maxHealth = 3;
     private int currentHealth;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         currentHealth = maxHealth;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(int damageAmount)
     {
-        
+        currentHealth -= damageAmount;
+        Debug.Log($"[PlayerHealth] Player bị {damageAmount} sát thương. HP còn: {currentHealth}/{maxHealth}");
+
+        if (currentHealth <= 0)
+            Die();
+    }
+
+    private void Die()
+    {
+        Debug.Log("[PlayerHealth] Player đã chết.");
+        // TODO: game over, animation, v.v.
     }
 }

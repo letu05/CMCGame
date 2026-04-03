@@ -5,12 +5,16 @@ public class PlayerController : MonoBehaviour
 {
 [Header("Player Settings")]
 [SerializeField] private float moveSpeed = 5f;
-[SerializeField] private float stopThreshold = 0.1f; // ngưỡng dừng để tránh việc player bị trôi khi không có input
+[SerializeField] private float stopThreshold = 0.1f;
 [SerializeField] public float jumpForce = 10f;
 [SerializeField] private float doubleJumpForce = 8f;
 [SerializeField] private LayerMask groundLayer;
-[SerializeField] private float groundRayLength = 0.15f;// ban tiam chieu dai cua raycast de kiem tra xem player co dang o tren mat dat hay khong
-[SerializeField] private float groundRayInset = 0.05f; // khoang cach tu canh cua box collider den diem bat dau cua raycast de tranh truong hop raycast bi cham vao tuong hoac vat the khac
+[SerializeField] private float groundRayLength = 0.15f;
+[SerializeField] private float groundRayInset  = 0.05f;
+
+[Header("Stomp (giẫm lên đầu quái)")]
+[SerializeField] private LayerMask enemyLayer;
+[SerializeField] private float stompBounce = 8f;  // Lực nảy lên sau khi giẫm
 
 
 private Rigidbody2D rb;
@@ -180,5 +184,4 @@ private void Flip()
         scale.x *= -1;
         transform.localScale = scale;
     }
-    
 }

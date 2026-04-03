@@ -3,10 +3,7 @@ using UnityEngine;
 public class Coin : MonoBehaviour
 {
     [SerializeField] private AudioClip coinSound;
-    private GameManager GameManager;
-
-    
-
+    [SerializeField] private int coinValue = 10; // Số coin nhận được khi nhặt
 
     // Dùng khi Collider có Is Trigger = true
     private void OnTriggerEnter2D(Collider2D other)
@@ -31,7 +28,7 @@ public class Coin : MonoBehaviour
         if (coinSound != null)
             AudioSource.PlayClipAtPoint(coinSound, transform.position);
 
-        GameManager.Instance?.AddCoin();
+        GameManager.Instance?.AddCoin(coinValue);
         Destroy(gameObject);
     }
 }

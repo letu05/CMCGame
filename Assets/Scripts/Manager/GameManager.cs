@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     private void UpdateCoinUI()
     {
         if (coinText != null)
-            coinText.text = $"x{coin:00}";
+            coinText.text = $"{coin:00}";
     }
 
     // ─── Score ───────────────────────────────────────────────────────
@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
     private void UpdateScoreUI()
     {
         if (scoreText != null)
-            scoreText.text = score.ToString("000000");
+            scoreText.text = score.ToString("000");
     }
 
     // ─── Timer ───────────────────────────────────────────────────────

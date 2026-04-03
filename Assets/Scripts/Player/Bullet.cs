@@ -18,10 +18,12 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float lifetime = 4f;       // Tự huỷ sau n giây
     [SerializeField] private int   damage   = 1;
     [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private LayerMask playerLayer;
 
-    [Header("Bomb – Vòng cung")]
-    [SerializeField] private float arcHeight        = 3f;   // Độ cao vòng cung
-    [SerializeField] private float bombDetectRadius = 2.5f; // Bán kính phát hiện quái
+    [Header("Bomb – 1/4 Hình Tròn")]
+    [SerializeField] private float arcRadius        = 3f;
+    [SerializeField] private float bombDetectRadius = 2.5f;
+    [SerializeField] private LayerMask groundLayer;
 
     [Header("Boomerang – Quay lại")]
     [SerializeField] private float returnDelay  = 0.35f;    // Giây bay ra trước khi quay
@@ -32,10 +34,13 @@ public class Bullet : MonoBehaviour
     private Transform   owner;          // Player (Boomerang cần để quay về)
 
     // Bomb
-    private bool    isBombArcing;
-    private Vector2 bombStart;
-    private Vector2 bombTarget;
-    private float   arcT;
+    private bool      isBombArcing;
+    private bool      isBombHoming;     // Đang bay về phía quái
+    private Transform bombTargetEnemy;  // Quái bị lock
+    private Vector2   bombCenter;
+    private float     arcRadius_rt;
+    private float     arcDirX;
+    private float     arcTheta;
 
     // Boomerang
     private bool  isReturning;
@@ -82,52 +87,63 @@ public class Bullet : MonoBehaviour
     // ════════════════════════════════ BOMB ═════════════════════════════════
     private void InitBomb(Vector2 direction)
     {
-        Collider2D nearEnemy = Physics2D.OverlapCircle(
-            transform.position, bombDetectRadius, enemyLayer);
-
-        if (nearEnemy != null)
-        {
-            // Quái ở gần: đâm thẳng như Dart
-            Vector2 toEnemy = ((Vector2)nearEnemy.transform.position
-                               - (Vector2)transform.position).normalized;
-            rb.linearVelocity = toEnemy * speed;
-            isBombArcing = false;
-        }
-        else
-        {
-            // Không có quái: ném vòng cung
-            isBombArcing = true;
-            bombStart    = transform.position;
-            bombTarget   = bombStart + direction.normalized * (speed * 1.5f);
-            arcT         = 0f;
-        }
+        isBombArcing    = true;
+        isBombHoming    = false;
+        bombTargetEnemy = null;
+        arcRadius_rt    = arcRadius;
+        arcDirX         = direction.x >= 0f ? 1f : -1f;
+        bombCenter      = (Vector2)transform.position + new Vector2(0f, -arcRadius_rt);
+        arcTheta        = Mathf.PI * 0.5f;
+        Debug.Log($"[Bomb] Spawn tại {transform.position}, hướng={(arcDirX > 0 ? "Phải" : "Trái")}, R={arcRadius_rt}");
     }
 
     private void UpdateBomb()
     {
-        if (!isBombArcing) return;
-
-        arcT += Time.deltaTime * (speed / Vector2.Distance(bombStart, bombTarget));
-        arcT  = Mathf.Clamp01(arcT);
-
-        // Parabola bằng Lerp + sin
-        Vector2 flatPos      = Vector2.Lerp(bombStart, bombTarget, arcT);
-        float   heightOffset = arcHeight * Mathf.Sin(Mathf.PI * arcT);
-        transform.position   = new Vector3(flatPos.x, flatPos.y + heightOffset, 0f);
-
-        // Sprite xoay theo tiếp tuyến
-        if (arcT < 1f)
+        // ── Chế độ homing: bay thẳng tới quái ──────────────────────────────
+        if (isBombHoming)
         {
-            float   nextT      = Mathf.Clamp01(arcT + 0.01f);
-            Vector2 flatNext   = Vector2.Lerp(bombStart, bombTarget, nextT);
-            float   nextH      = arcHeight * Mathf.Sin(Mathf.PI * nextT);
-            Vector2 tangent    = new Vector2(flatNext.x - flatPos.x,
-                                             (flatNext.y + nextH) - (flatPos.y + heightOffset));
+            if (bombTargetEnemy == null) { Destroy(gameObject); return; }
+
+            Vector2 toEnemy   = ((Vector2)bombTargetEnemy.position
+                                 - (Vector2)transform.position).normalized;
+            rb.linearVelocity = toEnemy * speed;
             transform.rotation = Quaternion.Euler(0f, 0f,
-                                     Mathf.Atan2(tangent.y, tangent.x) * Mathf.Rad2Deg);
+                Mathf.Atan2(toEnemy.y, toEnemy.x) * Mathf.Rad2Deg);
+            return;
         }
 
-        if (arcT >= 1f) Destroy(gameObject);
+        // ── Chế độ arc: bay 1/4 vòng tròn xuống ───────────────────────────
+        if (!isBombArcing) return;
+
+        // Check quái trong bán kính → chuyển homing
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, bombDetectRadius, enemyLayer);
+        if (hit != null)
+        {
+            isBombArcing    = false;
+            isBombHoming    = true;
+            bombTargetEnemy = hit.transform;
+            Debug.Log($"[Bomb] Phát hiện quái '{hit.name}' tại {hit.transform.position} → chuyển homing");
+            return;
+        }
+
+        float angularSpeed = speed / arcRadius_rt;
+        arcTheta -= angularSpeed * Time.deltaTime;
+
+        if (arcTheta <= 0f)
+        {
+            Debug.Log("[Bomb] Arc kết thúc (không gặp quái) → Destroy");
+            Destroy(gameObject);
+            return;
+        }
+
+        float px = bombCenter.x + arcDirX * arcRadius_rt * Mathf.Cos(arcTheta);
+        float py = bombCenter.y + arcRadius_rt * Mathf.Sin(arcTheta);
+        transform.position = new Vector3(px, py, 0f);
+
+        float tx = arcDirX * arcRadius_rt * Mathf.Sin(arcTheta);
+        float ty = -arcRadius_rt * Mathf.Cos(arcTheta);
+        transform.rotation = Quaternion.Euler(0f, 0f,
+            Mathf.Atan2(ty, tx) * Mathf.Rad2Deg);
     }
 
     // ══════════════════════════════ BOOMERANG ══════════════════════════════
@@ -162,14 +178,44 @@ public class Bullet : MonoBehaviour
     // ══════════════════════════════ HIT ════════════════════════════════════
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (((1 << other.gameObject.layer) & enemyLayer) == 0) return;
+        int layer = 1 << other.gameObject.layer;
 
-        IcanTakeDamage damageable = other.GetComponent<IcanTakeDamage>();
-        damageable?.TakeDamage(damage);
+        // ── Boomerang về đến owner → chỉ destroy, KHÔNG gây damage ──────────
+        if (bulletType == BulletType.Boomerang && owner != null
+            && other.transform == owner)
+        {
+            Debug.Log("[Boomerang] Về đến tay người bắn → Destroy");
+            Destroy(gameObject);
+            return;
+        }
 
-        
+        // ── Chạm đất → mất ngay (chỉ Bomb mới set groundLayer) ──────────────
+        if ((layer & groundLayer) != 0)
+        {
+            Debug.Log($"[{bulletType}] Chạm đất '{other.name}' → Destroy");
+            Destroy(gameObject);
+            return;
+        }
 
-        Destroy(gameObject);
+        // ── Chạm quái hoặc player → gây damage qua IcanTakeDamage ───────────
+        bool hitEnemy  = (layer & enemyLayer)  != 0;
+        bool hitPlayer = (layer & playerLayer) != 0;
+
+        if (hitEnemy || hitPlayer)
+        {
+            string who = hitEnemy ? "Quái" : "Player";
+            IcanTakeDamage target = other.GetComponent<IcanTakeDamage>();
+            if (target != null)
+            {
+                Debug.Log($"[{bulletType}] Trúng {who} '{other.name}', gây {damage} damage");
+                target.TakeDamage(damage);
+            }
+            else
+            {
+                Debug.LogWarning($"[{bulletType}] {who} '{other.name}' không có IcanTakeDamage!");
+            }
+            Destroy(gameObject);
+        }
     }
 
     // ─── Gizmo ─────────────────────────────────────────────────────────────

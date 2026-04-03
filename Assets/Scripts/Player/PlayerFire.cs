@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerFire : MonoBehaviour
 {
-    // ─────────────────────────── Inspector ────────────────────────────────
+    
     [Header("Prefab từng loại đạn (kéo 3 prefab vào đây)")]
     [SerializeField] private GameObject bombPrefab;
     [SerializeField] private GameObject dartPrefab;
@@ -28,7 +28,7 @@ public class PlayerFire : MonoBehaviour
     private int   dartAmmo;
     private int   boomerangAmmo;
 
-    private BulletType currentType   = BulletType.Dart; // Loại đang chọn
+    [SerializeField] private BulletType currentType   = BulletType.Dart; // Loại đang chọn
     private float      cooldownTimer = 0f;
     private bool       isFacingRight = true;
 
@@ -53,14 +53,14 @@ public class PlayerFire : MonoBehaviour
         // Đồng bộ hướng mặt theo scale (PlayerController flip scale.x)
         isFacingRight = transform.localScale.x > 0f;
 
-        if (ControlFreak2.CF2Input.GetButtonDown("Fire") && cooldownTimer <= 0f)
+        if (ControlFreak2.CF2Input.GetKeyDown(KeyCode.F) && cooldownTimer <= 0f)
         {
             TryFire();
             cooldownTimer = fireCooldown;
         }
     }
 
-    // ─────────────────────────── Bắn ──────────────────────────────────────
+
     private void TryFire()
     {
         if (firePoint == null)
@@ -98,7 +98,7 @@ public class PlayerFire : MonoBehaviour
         Debug.Log($"[PlayerFire] Bắn {currentType}. Còn lại: {GetAmmo(currentType)}");
     }
 
-    // ─────────────────────────── Ammo API ─────────────────────────────────
+
     /// <summary>Nhặt đạn → cộng thêm amount viên cho loại đó.</summary>
     public void AddAmmo(BulletType type, int amount)
     {
@@ -114,7 +114,7 @@ public class PlayerFire : MonoBehaviour
     /// <summary>Đổi loại đạn đang dùng (gắn vào UI button / PowerUp).</summary>
     public void SwitchType(BulletType type) => currentType = type;
 
-    // ─────────────────────────── Helper ───────────────────────────────────
+    
     private GameObject GetPrefab(BulletType type) => type switch
     {
         BulletType.Bomb      => bombPrefab,
@@ -139,5 +139,20 @@ public class PlayerFire : MonoBehaviour
             case BulletType.Dart:      dartAmmo      = Mathf.Max(0, dartAmmo      - 1); break;
             case BulletType.Boomerang: boomerangAmmo = Mathf.Max(0, boomerangAmmo - 1); break;
         }
+    }
+
+    // ─────────────────────────── Gizmos ───────────────────────────────────
+    private void OnDrawGizmosSelected()
+    {
+        if (firePoint == null) return;
+
+        // Vẽ hình cầu vàng tại vị trí firePoint
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(firePoint.position, 0.1f);
+
+        // Vẽ đường thẳng theo hướng bắn (dựa theo scale.x)
+        float dir = transform.localScale.x >= 0f ? 1f : -1f;
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(firePoint.position, firePoint.position + new Vector3(dir * 0.5f, 0f, 0f));
     }
 }

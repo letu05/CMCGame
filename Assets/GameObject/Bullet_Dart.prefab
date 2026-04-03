@@ -186,7 +186,7 @@ MonoBehaviour:
   damage: 1
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   arcHeight: 3
   bombDetectRadius: 2.5
   returnDelay: 0.35

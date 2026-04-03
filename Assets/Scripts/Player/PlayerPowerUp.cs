@@ -72,20 +72,39 @@ public class PlayerPowerUp : MonoBehaviour
         if (collision.CompareTag("PointItem"))
         {
             GrowBig();
-            Destroy(collision.gameObject); // Biến mất nấm
+            Destroy(collision.gameObject);
+            return;
         }
-        
+
         // Khi chạm địch
-        else if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
+            // ── Kiểm tra stomp: player đang rơi + chạm đỉnh enemy ────────────
+            Rigidbody2D rb      = GetComponent<Rigidbody2D>();
+            Collider2D playerCol = GetComponent<Collider2D>();
+
+            if (rb != null && playerCol != null && rb.linearVelocity.y < 0f
+                && playerCol.bounds.min.y >= collision.bounds.center.y)
+            {
+                // ── STOMP: giết enemy + nảy lên ──────────────────────────────
+                EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
+                if (enemyHealth != null)
+                {
+                    enemyHealth.Stomp();
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x,
+                        playerController.JumpForce * 0.7f);   // nảy lên ~70% jump
+                    Debug.Log($"[PlayerPowerUp] Stomp '{collision.name}' → chết + nảy lên!");
+                }
+                return; // không nhận damage
+            }
+
+            // ── Va chạm bình thường từ hướng khác ────────────────────────────
             if (isPowerUpBig)
             {
-                ShrinkSmall(); // Teo nhỏ thay vì chết
-                // Cần 1 đoạn code hất văng enemy hoặc hất ngược nhân vật (Knockback) tại đây
+                ShrinkSmall();
             }
             else
             {
-                // Gọi chết (PlayerController.Die())
                 Debug.Log("Mario Died!");
             }
         }
