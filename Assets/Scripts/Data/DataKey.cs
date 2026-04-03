@@ -12,10 +12,15 @@ public static class DataKey
     /// <summary>Điểm hiện tại của ván chơi.</summary>
     public const string SCORE = "player_score";
 
-    /// <summary>Điểm cao nhất từng đạt được (high score).</summary>
-    public const string HIGH_SCORE = "player_high_score";
-
     // ── Mạng sống ────────────────────────────────────────────────────────
     /// <summary>Số mạng còn lại.</summary>
     public const string LIVES = "player_lives";
+
+    // ── Level ─────────────────────────────────────────────────────────────
+    /// <summary>Level cao nhất đã mở khóa (số nguyên).</summary>
+    public const string LEVEL_UNLOCKED = "level_unlocked";
+
+    // ── Sao ───────────────────────────────────────────────────────────────
+    /// <summary>Tổng số sao đã nhặt.</summary>
+    public const string STAR = "player_star";
 }

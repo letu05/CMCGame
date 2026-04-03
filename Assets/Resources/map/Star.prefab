@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 50884547391421755}
   - component: {fileID: 61099118695303065}
   - component: {fileID: 95061268324235159}
+  - component: {fileID: 4877337834994383592}
   m_Layer: 8
   m_Name: Star
   m_TagString: Star
@@ -190,6 +191,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4877337834994383592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709254077376921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22bab69c48911b14da394cf78072ebb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Star
+  starIndex: 1
+  starSound: {fileID: 0}
+  scoreBonus: 1000
 --- !u!1 &1724804207875695
 GameObject:
   m_ObjectHideFlags: 0

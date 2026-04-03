@@ -25,6 +25,6 @@ public class PlayerHealth : MonoBehaviour, IcanTakeDamage
     {
         Debug.Log("[PlayerHealth] Player đã chết.");
         anim?.SetTrigger("Die");
-        // TODO: game over, v.v.
+        
     }
 }

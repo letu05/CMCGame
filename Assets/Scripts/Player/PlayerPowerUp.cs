@@ -66,7 +66,7 @@ public class PlayerPowerUp : MonoBehaviour
             playerHealth?.SetAnimator(newAnimator); // đồng bộ animator cho PlayerHealth
         }
 
-        // Bạn có thể cần phải thay đổi offset/size của BoxCollider2D bên PlayerController tương ứng với model.
+       
     }
 
     // Xử lý va chạm vật lý
