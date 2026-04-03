@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
     private void UpdateScoreUI()
     {
         if (scoreText != null)
-            scoreText.text = score.ToString("000000");
+            scoreText.text = score.ToString("0000");
     }
 
     // ─── Star ───────────────────────────────────────────────

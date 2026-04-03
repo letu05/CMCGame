@@ -11,10 +11,12 @@ public class PlayerPowerUp : MonoBehaviour
     private GameObject PlayerBig;
     private PlayerController playerController;
     private PlayerHealth playerHealth;
+    private PlayerShield playerShield;
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
         playerHealth     = GetComponentInChildren<PlayerHealth>(true);
+        playerShield     = GetComponent<PlayerShield>();
         Debug.Log($"[PlayerPowerUp] playerHealth = {(playerHealth == null ? "NULL !!!" : playerHealth.ToString())}");
         // Nếu Find không ra thì lấy từ inspector
         if (PlayerSmall == null) PlayerSmall = transform.Find("PlayerSmall").gameObject;
@@ -83,6 +85,13 @@ public class PlayerPowerUp : MonoBehaviour
         // Khi chạm địch
         if (collision.CompareTag("Enemy"))
         {
+            // ── Kiểm tra Shield: nếu đang được bảo vệ → bỏ qua hoàn toàn ────
+            if (playerShield != null && playerShield.IsShielded)
+            {
+                Debug.Log("[PlayerPowerUp] Shield đang bật → miễn sát thương từ enemy.");
+                return;
+            }
+
             // ── Kiểm tra stomp: player đang rơi + chạm đỉnh enemy ────────────
             Rigidbody2D rb      = GetComponent<Rigidbody2D>();
             Collider2D playerCol = GetComponent<Collider2D>();

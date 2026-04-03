@@ -26,11 +26,11 @@ public class Bullet : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Boomerang – Quay lại")]
-    [SerializeField] private float returnDelay  = 0.35f;    
+    [SerializeField] private float rotateSpeed = 360f;     [SerializeField] private float returnDelay  = 0.35f;    
 
     // ────────────────────────────── Runtime ────────────────────────────────
     private Rigidbody2D rb;
-    private Transform   owner;          // Player (Boomerang cần để quay về)
+    [SerializeField]private Transform   owner;          
 
     // Bomb
     private bool      isBombArcing;
