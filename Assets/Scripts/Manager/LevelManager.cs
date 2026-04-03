@@ -2,10 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Quản lý từng level: timer, 3 sao, thắng/thua, load scene.
-/// Gắn vào 1 GameObject trong mỗi scene (KHÔNG DontDestroyOnLoad).
-/// </summary>
+
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }
@@ -25,18 +22,18 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Image starImage1;
     [SerializeField] private Image starImage2;
     [SerializeField] private Image starImage3;
-    [SerializeField] private Sprite starEmpty;      // sprite sao chưa nhặt (tối/mờ)
-    [SerializeField] private Sprite starCollected;  // sprite sao đã nhặt (sáng)
+    [SerializeField] private Sprite starEmpty;      
+    [SerializeField] private Sprite starCollected;  
 
     // ─── Level Complete / Fail ────────────────────────────────────────
     [Header("Panels")]
-    [SerializeField] private GameObject levelCompletePanel;// level hoàn    thành
-    [SerializeField] private GameObject levelFailPanel;// level thất bại
+    [SerializeField] private GameObject levelCompletePanel;
+    [SerializeField] private GameObject levelFailPanel;
 
     // ─── Private state ────────────────────────────────────────────────
     private float timeRemaining;
     private bool  isLevelOver = false;
-    private bool[] starCollectedArr = new bool[4]; // index 1–3 dùng, 0 bỏ
+    private bool[] starCollectedArr = new bool[4]; 
 
     // ─────────────────────────────────────────────────────────────────
     private void Awake()
@@ -85,7 +82,7 @@ public class LevelManager : MonoBehaviour
     public void CollectStar(int index)
     {
         if (index < 1 || index > 3) return;
-        if (starCollectedArr[index]) return; // đã nhặt rồi
+        if (starCollectedArr[index]) return; 
 
         starCollectedArr[index] = true;
         RefreshStarUI();
@@ -162,7 +159,7 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    // ─── Getters ─────────────────────────────────────────────────────
+    
     public float GetTimeRemaining() => timeRemaining;
     public int   GetLevelIndex()    => levelIndex;
     public bool  IsLevelOver()      => isLevelOver;

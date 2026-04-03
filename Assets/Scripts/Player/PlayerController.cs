@@ -63,7 +63,7 @@ private void Update()
 
 private void Moved()
     {
-        // 1. Dùng GetAxisRaw để input nhận ngay -1, 0, 1 (Giống bấm nút D-Pad cứng của Mario, giúp không bị trôi nổi/delay)
+        
         float moveInput = ControlFreak2.CF2Input.GetAxisRaw("Horizontal");
         
         // 2. Xác định xem có đang "đảo chiều ngược lại" khi đang có vận tốc hay không
@@ -90,12 +90,12 @@ private void Moved()
         else
         {
             // Gia tốc chạy bình thường. Có thể nâng/hạ số 35f để nhân vật tăng tốc khởi hành nhanh hay chậm
-            float acceleration = 35f;
+            float acceleration = 25f;
             float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, moveInput * moveSpeed, acceleration * Time.deltaTime);
             rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
         }
 
-        // 4. Đảo chiều hiển thị của nhân vật (Luôn quay mặt NGAY LẬP TỨC theo nút bấm, dù đang trượt lùi)
+        
         if(moveInput > 0 && !isFacingRight || moveInput < 0 && isFacingRight)
         {
             Flip();
@@ -106,8 +106,7 @@ private void UpdateAnimations()
     {
         if (animator != null)
         {
-            // Trả lại Animator Parameter Bool để DUY TRÌ đúng frame dáng trượt Skid đến khi phanh xong giống y hệt Mario
-            animator.SetBool("isSliding", isSliding);
+            
             animator.SetFloat("speed", Mathf.Abs(rb.linearVelocity.x));
             animator.SetBool("isGrounded", isGrounded);
             animator.SetFloat("yVelocity", rb.linearVelocity.y);
@@ -115,10 +114,10 @@ private void UpdateAnimations()
     }
 private void Jump()
     {
-        if (isGrounded)
+        if (isGrounded)//kiem tra groun
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-            rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse); // Dùng JumpForce (property) thay vì jumpForce (field)
+            rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse); 
             if (animator != null)
             {
                 animator.SetTrigger("jumpTrigger");
@@ -131,7 +130,7 @@ private void Jump()
             canDoubleJump = false;
             if (animator != null)
             {
-                animator.SetTrigger("jumpTrigger"); // Gọi trigger cả khi Double Jump
+                animator.SetTrigger("jumpTrigger"); 
             }
         }
     }

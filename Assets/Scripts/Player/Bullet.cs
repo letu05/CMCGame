@@ -26,8 +26,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Boomerang – Quay lại")]
-    [SerializeField] private float returnDelay  = 0.35f;    // Giây bay ra trước khi quay
-    [SerializeField] private float rotateSpeed  = 540f;     // Độ xoay/giây
+    [SerializeField] private float returnDelay  = 0.35f;    
 
     // ────────────────────────────── Runtime ────────────────────────────────
     private Rigidbody2D rb;
@@ -46,11 +45,7 @@ public class Bullet : MonoBehaviour
     private bool  isReturning;
     private float returnTimer;
 
-    // ───────────────────────────── Public Init API ──────────────────────────
-    /// <summary>
-    /// Gọi ngay sau Instantiate.
-    /// bulletType đã được baked trong prefab – Init chỉ khởi tạo chuyển động.
-    /// </summary>
+   
     public void Init(Vector2 direction, Transform ownerTransform)
     {
         rb              = GetComponent<Rigidbody2D>();

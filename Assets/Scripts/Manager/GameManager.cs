@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
     /// <summary>Kiểm tra level có được phép chơi không (dùng ở màn chọn level).</summary>
     public bool IsLevelUnlocked(int levelIndex)
     {
-        return levelIndex <= levelUnlocked + 1; // level 1 luôn mở, level n mở khi đã xong n-1
+        return levelIndex <= levelUnlocked + 1; 
     }
 
     public int GetLevelUnlocked() => levelUnlocked;
