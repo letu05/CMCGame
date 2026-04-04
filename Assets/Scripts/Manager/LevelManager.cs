@@ -29,6 +29,7 @@ public class LevelManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject levelCompletePanel;
     [SerializeField] private GameObject levelFailPanel;
+    [SerializeField] private GiftPanel  giftPanel;
 
     // ─── Private state ────────────────────────────────────────────────
     private float timeRemaining;
@@ -78,22 +79,28 @@ public class LevelManager : MonoBehaviour
 
     // ─── Star System ─────────────────────────────────────────────────
 
-    /// <summary>Gọi từ Star.cs khi player nhặt sao (index = 1, 2 hoặc 3).</summary>
+    /// <summary>
+    /// Gọi từ Star.cs khi player nhặt sao.
+    /// starIndex chỉ dùng để tránh nhặt lại cùng 1 sao.
+    /// UI luôn fill từ TRÁI → PHẢI theo số sao đã nhặt.
+    /// </summary>
     public void CollectStar(int index)
     {
         if (index < 1 || index > 3) return;
-        if (starCollectedArr[index]) return; 
+        if (starCollectedArr[index]) return; // đã nhặt rồi, bỏ qua
 
         starCollectedArr[index] = true;
         RefreshStarUI();
-        Debug.Log($"[LevelManager] Sao #{index} đã nhặt!");
+        Debug.Log($"[LevelManager] Sao #{index} đã nhặt! Tổng: {GetStarCount()}");
     }
 
     private void RefreshStarUI()
     {
-        SetStarImage(starImage1, starCollectedArr[1]);
-        SetStarImage(starImage2, starCollectedArr[2]);
-        SetStarImage(starImage3, starCollectedArr[3]);
+        // Đếm số sao đã nhặt → fill slot từ trái sang phải
+        int count = GetStarCount();
+        SetStarImage(starImage1, count >= 1); // slot trái  : sáng nếu có ≥ 1 sao
+        SetStarImage(starImage2, count >= 2); // slot giữa  : sáng nếu có ≥ 2 sao
+        SetStarImage(starImage3, count >= 3); // slot phải  : sáng nếu có đủ 3 sao
     }
 
     private void SetStarImage(Image img, bool collected)
@@ -121,7 +128,26 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"[LevelManager] Level {levelIndex} hoàn thành! ⭐ x{stars}");
 
         GameManager.Instance?.UnlockLevel(levelIndex);
-        if (levelCompletePanel != null) levelCompletePanel.SetActive(true);
+
+        if (giftPanel != null)
+        {
+            // Hiện GiftPanel → sau khi player nhấn CLAIM mới hiện Victory
+            giftPanel.Show(onDone: ShowVictoryPanel);
+        }
+        else
+        {
+            // Không có GiftPanel → hiện Victory ngay
+            ShowVictoryPanel();
+        }
+    }
+
+    /// <summary>Hiện UI Victory (LevelCompletePanel). Gọi trực tiếp hoặc qua callback từ GiftPanel.</summary>
+    public void ShowVictoryPanel()
+    {
+        if (levelCompletePanel != null)
+            levelCompletePanel.SetActive(true);
+        else
+            Debug.LogWarning("[LevelManager] Chưa gán levelCompletePanel!");
     }
 
     public void LevelFail()

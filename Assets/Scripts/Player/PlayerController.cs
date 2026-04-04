@@ -5,16 +5,14 @@ public class PlayerController : MonoBehaviour
 {
 [Header("Player Settings")]
 [SerializeField] private float moveSpeed = 5f;
-[SerializeField] private float stopThreshold = 0.1f;
-[SerializeField] public float jumpForce = 10f;
-[SerializeField] private float doubleJumpForce = 8f;
+[SerializeField] public float jumpForce = 7f;
+[SerializeField] private float doubleJumpForce = 10f;
 [SerializeField] private LayerMask groundLayer;
 [SerializeField] private float groundRayLength = 0.15f;
 [SerializeField] private float groundRayInset  = 0.05f;
 
 [Header("Stomp (giẫm lên đầu quái)")]
 [SerializeField] private LayerMask enemyLayer;
-[SerializeField] private float stompBounce = 8f;  // Lực nảy lên sau khi giẫm
 
 
 private Rigidbody2D rb;
@@ -28,7 +26,7 @@ private bool isSliding;
 
     public float JumpForce { get; set; }
 
-    // Gọi từ PlayerPowerUp mỗi khi đổi model (PlayerSmall <-> PlayerBig)
+    
     public void SetAnimator(Animator newAnimator)
     {
         animator = newAnimator;
@@ -44,13 +42,14 @@ private bool isSliding;
 
 private void Update()
     {
-        Moved();
-        isGrounded = IsGrounded();
+        isGrounded = IsGrounded(); // ← tính trước để Moved() dùng đúng frame này
 
         if (isGrounded)
         {
             canDoubleJump = true;
         }
+
+        Moved();
 
         if(ControlFreak2.CF2Input.GetButtonDown("Jump"))
         {
@@ -90,7 +89,7 @@ private void Moved()
         else
         {
             // Gia tốc chạy bình thường. Có thể nâng/hạ số 35f để nhân vật tăng tốc khởi hành nhanh hay chậm
-            float acceleration = 25f;
+            float acceleration = 15f;
             float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, moveInput * moveSpeed, acceleration * Time.deltaTime);
             rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
         }
@@ -106,9 +105,10 @@ private void UpdateAnimations()
     {
         if (animator != null && animator.runtimeAnimatorController != null)
         {
-            animator.SetFloat("speed", Mathf.Abs(rb.linearVelocity.x));
+            animator.SetFloat("speed", Mathf.Abs(rb.linearVelocity.x), 0.08f, Time.deltaTime);
             animator.SetBool("isGrounded", isGrounded);
-            animator.SetFloat("yVelocity", rb.linearVelocity.y);
+            animator.SetFloat("yVelocity", rb.linearVelocity.y, 0.05f, Time.deltaTime);
+            animator.SetBool("isSliding", isSliding); // ← thiếu dòng này!
         }
     }
 private void Jump()
