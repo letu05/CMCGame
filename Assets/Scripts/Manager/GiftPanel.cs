@@ -6,6 +6,10 @@ using UnityEngine.UI;
 /// <summary>
 /// Gắn vào GameObject GiftPanel (ẩn ban đầu).
 /// Gọi Show() từ LevelManager khi player qua màn.
+/// 
+/// FIX: StartCoroutine được chạy bởi LevelManager (luôn active)
+/// thay vì GiftPanel tự chạy — tránh lỗi "Coroutine couldn't be started
+/// because the game object is inactive".
 /// </summary>
 public class GiftPanel : MonoBehaviour
 {
@@ -32,32 +36,45 @@ public class GiftPanel : MonoBehaviour
     private int   selectedIndex  = 0;
     private bool  spinDone       = false;
 
+    // Runner ngoài để chạy coroutine (LevelManager hoặc MonoBehaviour luôn active)
+    private MonoBehaviour coroutineRunner;
+
     // ─────────────────────────────────────────────────────────────────────────
 
     private void Awake()
     {
-        gameObject.SetActive(false); // ẩn ban đầu
+        // KHÔNG gọi SetActive(false) ở đây!
+        // Nếu object chưa từng active, SetActive(true) sẽ trigger Awake()
+        // và lệnh SetActive(false) bên trong sẽ lập tức tắt lại object → panel không hiện.
+        // Thay vào đó: đánh dấu inactive trong Unity Editor (bỏ tick checkbox)
+        // và LevelManager.Start() sẽ đảm bảo panel ẩn qua code.
         if (claimButton != null)
             claimButton.onClick.AddListener(OnClaim);
     }
 
     /// <summary>
     /// Gọi từ LevelManager.LevelComplete().
-    /// onDone: callback chạy sau khi player nhấn CLAIM (thường là hiện Victory panel).
+    /// runner  : MonoBehaviour luôn active để chạy coroutine (truyền LevelManager.Instance).
+    /// onDone  : callback chạy sau khi player nhấn CLAIM (thường là hiện Victory panel).
     /// </summary>
-    public void Show(Action onDone = null)
+    public void Show(MonoBehaviour runner, Action onDone = null)
     {
-        onClaimDone = onDone;
-        gameObject.SetActive(true);
+        coroutineRunner = runner;
+        onClaimDone     = onDone;
+
+        gameObject.SetActive(true);  // an toàn vì Awake() không còn gọi SetActive(false)
         spinDone = false;
         if (claimButton != null) claimButton.gameObject.SetActive(false);
 
         selectedIndex = UnityEngine.Random.Range(0, cards.Length);
         HighlightCard(0);
-        StartCoroutine(SpinRoutine());
+
+        coroutineRunner.StartCoroutine(SpinRoutine());
     }
 
-    // ─── Coroutine quay ───────────────────────────────────────────────────────
+
+
+    
 
     private IEnumerator SpinRoutine()
     {
@@ -68,28 +85,24 @@ public class GiftPanel : MonoBehaviour
             HighlightCard(current);
             current = (current + 1) % cards.Length;
 
-            // Interval tăng dần (nhanh → chậm) trong 70% cuối
+            // Interval tăng dần (nhanh → chậm)
             float t        = (float)step / totalSteps;
             float interval = Mathf.Lerp(spinFastInterval, spinSlowInterval, t);
-            yield return new WaitForSeconds(interval);
+            yield return new WaitForSecondsRealtime(interval); // Realtime → không bị đứng bởi timeScale
         }
 
         // Dừng đúng card đã chọn ngẫu nhiên
-        // Di chuyển tiếp cho đến khi tới selectedIndex
         while (current % cards.Length != selectedIndex)
         {
             HighlightCard(current % cards.Length);
             current++;
-            yield return new WaitForSeconds(spinSlowInterval);
+            yield return new WaitForSecondsRealtime(spinSlowInterval);
         }
 
         HighlightCard(selectedIndex);
         spinDone = true;
 
-        // Hiện nút CLAIM
         if (claimButton != null) claimButton.gameObject.SetActive(true);
-
-        Debug.Log($"[GiftPanel] Dừng tại card {selectedIndex} → +{coinValues[selectedIndex]} coin");
     }
 
     // ─── Claim ────────────────────────────────────────────────────────────────
@@ -100,7 +113,6 @@ public class GiftPanel : MonoBehaviour
 
         int reward = coinValues[selectedIndex];
         GameManager.Instance?.AddCoin(reward);
-        Debug.Log($"[GiftPanel] Cộng {reward} coin. Đóng GiftPanel → chạy callback.");
 
         gameObject.SetActive(false);
         onClaimDone?.Invoke(); // → LevelManager sẽ hiện Victory panel

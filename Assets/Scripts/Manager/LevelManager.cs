@@ -44,12 +44,20 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        Time.timeScale = 1f; // reset sau khi qua màn (tránh đứng coroutine)
         timeRemaining = timeLimit;
         UpdateTimerUI();
         RefreshStarUI(); // hiển thị 3 sao trạng thái ban đầu (chưa nhặt)
 
         if (levelCompletePanel != null) levelCompletePanel.SetActive(false);
         if (levelFailPanel     != null) levelFailPanel.SetActive(false);
+        if (giftPanel          != null) giftPanel.gameObject.SetActive(false);
+
+        // Cập nhật text "Level X" trên HUD
+        GameManager.Instance?.UpdateLevelUI(levelIndex);
+
+        // Reset bộ đếm quảng cáo cho màn mới
+        AdManager.Instance?.ResetAdCountForNewLevel();
     }
 
     private void Update()
@@ -91,7 +99,6 @@ public class LevelManager : MonoBehaviour
 
         starCollectedArr[index] = true;
         RefreshStarUI();
-        Debug.Log($"[LevelManager] Sao #{index} đã nhặt! Tổng: {GetStarCount()}");
     }
 
     private void RefreshStarUI()
@@ -124,30 +131,21 @@ public class LevelManager : MonoBehaviour
         if (isLevelOver) return;
         isLevelOver = true;
 
-        int stars = GetStarCount();
-        Debug.Log($"[LevelManager] Level {levelIndex} hoàn thành! ⭐ x{stars}");
-
         GameManager.Instance?.UnlockLevel(levelIndex);
+        GameManager.Instance?.SaveLevelStars(levelIndex, GetStarCount()); // ← lưu sao per-level
 
         if (giftPanel != null)
-        {
-            // Hiện GiftPanel → sau khi player nhấn CLAIM mới hiện Victory
-            giftPanel.Show(onDone: ShowVictoryPanel);
-        }
+            giftPanel.Show(runner: this, onDone: ShowVictoryPanel);
         else
-        {
-            // Không có GiftPanel → hiện Victory ngay
             ShowVictoryPanel();
-        }
     }
 
     /// <summary>Hiện UI Victory (LevelCompletePanel). Gọi trực tiếp hoặc qua callback từ GiftPanel.</summary>
     public void ShowVictoryPanel()
     {
+        Time.timeScale = 0f;
         if (levelCompletePanel != null)
             levelCompletePanel.SetActive(true);
-        else
-            Debug.LogWarning("[LevelManager] Chưa gán levelCompletePanel!");
     }
 
     public void LevelFail()
@@ -155,7 +153,7 @@ public class LevelManager : MonoBehaviour
         if (isLevelOver) return;
         isLevelOver = true;
 
-        Debug.Log($"[LevelManager] Level {levelIndex} thất bại!");
+        Time.timeScale = 0f;
         if (levelFailPanel != null) levelFailPanel.SetActive(true);
     }
 
@@ -167,10 +165,11 @@ public class LevelManager : MonoBehaviour
             ? nextSceneIndex
             : SceneManager.GetActiveScene().buildIndex + 1;
 
+        // Đã hết tất cả level → về Main Menu
         if (next < SceneManager.sceneCountInBuildSettings)
             SceneManager.LoadScene(next);
         else
-            Debug.Log("[LevelManager] Hết level!");
+            SceneManager.LoadScene(0);
     }
 
     public void RestartLevel()
@@ -182,7 +181,7 @@ public class LevelManager : MonoBehaviour
     public void GoToMainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1); // GameOptionLevel
     }
 
     

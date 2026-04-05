@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6216999461376251377}
   - component: {fileID: 6432855636549708785}
   - component: {fileID: 865263107482540954}
+  - component: {fileID: 1259578207381592433}
   m_Layer: 5
   m_Name: level
   m_TagString: Untagged
@@ -123,7 +124,44 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6432855636549708785}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1259578207381592433}
+        m_TargetAssemblyTypeName: LevelButton, Assembly-CSharp
+        m_MethodName: OnLevelClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1259578207381592433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2651755633643294285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8032d8f795b516344a1744fbb7a49446, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelButton
+  levelIndex: 1
+  sceneIndex: 2
+  levelNumberText: {fileID: 592694007677772953}
+  buttonImage: {fileID: 6432855636549708785}
+  button: {fileID: 865263107482540954}
+  starImage1: {fileID: 2580721400009788015}
+  starImage2: {fileID: 1195819423756232071}
+  starImage3: {fileID: 11204360064917606}
+  starFilled: {fileID: 21300000, guid: 964ecf763a23e8d4a842238be40ef317, type: 3}
+  starEmpty: {fileID: 21300000, guid: 0ff9e0ec5a1d2824eaa5515afc7bf1b8, type: 3}
+  spriteCompleted: {fileID: 21300000, guid: aac9dd2bf40e434479e015173fcd1bc5, type: 2}
+  spriteAvailable: {fileID: 21300000, guid: 54541a9c06ad6b0489fbcd3d376fb669, type: 2}
+  spriteLocked: {fileID: 21300000, guid: a7c045a1291b172479246b939b087a9f, type: 3}
 --- !u!1 &5161961765163720887
 GameObject:
   m_ObjectHideFlags: 0

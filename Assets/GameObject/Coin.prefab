@@ -166,7 +166,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coin
   coinSound: {fileID: 8300000, guid: 66b5b6be99bbaba45b4c660483613b30, type: 3}
-  coinValue: 10
+  coinValue: 1
+  scoreValue: 100
 --- !u!1 &6667794866417939630
 GameObject:
   m_ObjectHideFlags: 0

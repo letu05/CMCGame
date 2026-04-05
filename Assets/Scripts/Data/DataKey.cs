@@ -23,4 +23,14 @@ public static class DataKey
     // ── Sao ───────────────────────────────────────────────────────────────
     /// <summary>Tổng số sao đã nhặt.</summary>
     public const string STAR = "player_star";
+
+    /// <summary>Key lưu số sao của từng level. Ví dụ level 1 → "level_star_1"</summary>
+    public static string LevelStar(int levelIndex) => $"level_star_{levelIndex}";
+
+
+    // ── Shop – vật phẩm chờ dùng ở màn tiếp ─────────────────────────────
+    public const string PENDING_BOMB      = "pdg_bomb";
+    public const string PENDING_DART      = "pdg_dart";
+    public const string PENDING_BOOMERANG = "pdg_boomerang";
+    public const string PENDING_SHIELD    = "pdg_shield";
 }

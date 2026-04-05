@@ -32,13 +32,6 @@ public class CastleGate : MonoBehaviour
         isOpen = true;
 
         if (gateAnimator != null)
-        {
             gateAnimator.SetTrigger(openTriggerName);
-            Debug.Log("[CastleGate] Đã trigger animation mở cửa: " + openTriggerName);
-        }
-        else
-        {
-            Debug.LogWarning("[CastleGate] Không tìm thấy Animator!");
-        }
     }
 }

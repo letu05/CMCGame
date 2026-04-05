@@ -89,7 +89,6 @@ public class Bullet : MonoBehaviour
         arcDirX         = direction.x >= 0f ? 1f : -1f;
         bombCenter      = (Vector2)transform.position + new Vector2(0f, -arcRadius_rt);
         arcTheta        = Mathf.PI * 0.5f;
-        Debug.Log($"[Bomb] Spawn tại {transform.position}, hướng={(arcDirX > 0 ? "Phải" : "Trái")}, R={arcRadius_rt}");
     }
 
     private void UpdateBomb()
@@ -117,7 +116,6 @@ public class Bullet : MonoBehaviour
             isBombArcing    = false;
             isBombHoming    = true;
             bombTargetEnemy = hit.transform;
-            Debug.Log($"[Bomb] Phát hiện quái '{hit.name}' tại {hit.transform.position} → chuyển homing");
             return;
         }
 
@@ -126,7 +124,6 @@ public class Bullet : MonoBehaviour
 
         if (arcTheta <= 0f)
         {
-            Debug.Log("[Bomb] Arc kết thúc (không gặp quái) → Destroy");
             Destroy(gameObject);
             return;
         }
@@ -179,7 +176,6 @@ public class Bullet : MonoBehaviour
         if (bulletType == BulletType.Boomerang && owner != null
             && other.transform == owner)
         {
-            Debug.Log("[Boomerang] Về đến tay người bắn → Destroy");
             Destroy(gameObject);
             return;
         }
@@ -187,7 +183,6 @@ public class Bullet : MonoBehaviour
         // ── Chạm đất → mất ngay (chỉ Bomb mới set groundLayer) ──────────────
         if ((layer & groundLayer) != 0)
         {
-            Debug.Log($"[{bulletType}] Chạm đất '{other.name}' → Destroy");
             Destroy(gameObject);
             return;
         }
@@ -200,15 +195,7 @@ public class Bullet : MonoBehaviour
         {
             string who = hitEnemy ? "Quái" : "Player";
             IcanTakeDamage target = other.GetComponent<IcanTakeDamage>();
-            if (target != null)
-            {
-                Debug.Log($"[{bulletType}] Trúng {who} '{other.name}', gây {damage} damage");
-                target.TakeDamage(damage);
-            }
-            else
-            {
-                Debug.LogWarning($"[{bulletType}] {who} '{other.name}' không có IcanTakeDamage!");
-            }
+            if (target != null) target.TakeDamage(damage);
             Destroy(gameObject);
         }
     }

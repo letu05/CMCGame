@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Bộ não toàn game — tồn tại xuyên suốt mọi scene (DontDestroyOnLoad).
@@ -13,14 +14,18 @@ public class GameManager : MonoBehaviour
     private int coin;
     private int lives;
     private int star;
-    private int levelUnlocked; // Level cao nhất đã hoàn thành (mở khóa)
+    private int levelUnlocked; 
 
     [SerializeField] private int startLives = 3;
 
-    [Header("Text UI")]
-    [SerializeField] private TMPro.TextMeshProUGUI scoreText;
-    [SerializeField] private TMPro.TextMeshProUGUI coinText;
-    [SerializeField] private TMPro.TextMeshProUGUI starText;
+    //tu tim den game object co ten tuong tu
+    private const string SCORE_TEXT_NAME = "ScoreText";
+    private const string COIN_TEXT_NAME  = "CoinText";
+    private const string LEVEL_TEXT_NAME = "LevelText";   // tên GameObject chứa text "Level X"
+
+    private TMPro.TextMeshProUGUI scoreText;
+    private TMPro.TextMeshProUGUI coinText;
+    private TMPro.TextMeshProUGUI levelText;
 
     // ─── Singleton ────────────────────────────────────────────────────
     private void Awake()
@@ -30,6 +35,7 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             LoadData();
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -37,11 +43,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Tự tìm lại UI mỗi khi scene mới load xong
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        scoreText = GameObject.Find(SCORE_TEXT_NAME)?.GetComponent<TMPro.TextMeshProUGUI>();
+        coinText  = GameObject.Find(COIN_TEXT_NAME) ?.GetComponent<TMPro.TextMeshProUGUI>();
+        levelText = GameObject.Find(LEVEL_TEXT_NAME)?.GetComponent<TMPro.TextMeshProUGUI>();
+
+        UpdateCoinUI();
+        UpdateScoreUI();
+        // Level UI được cập nhật bởi LevelManager.Start() sau khi nó khởi tạo xong
+    }
+
     private void Start()
     {
         UpdateCoinUI();
         UpdateScoreUI();
-        UpdateStarUI();
     }
 
     // ─── Coin ─────────────────────────────────────────────────────────
@@ -54,6 +76,15 @@ public class GameManager : MonoBehaviour
     }
 
     public int GetCoin() => coin;
+
+    /// <summary>Trừ coin khi mua đồ trong Shop.</summary>
+    public void SpendCoin(int amount)
+    {
+        coin = Mathf.Max(0, coin - amount);
+        UpdateCoinUI();
+        SaveData();
+    }
+
 
     private void UpdateCoinUI()
     {
@@ -75,25 +106,16 @@ public class GameManager : MonoBehaviour
     private void UpdateScoreUI()
     {
         if (scoreText != null)
-            scoreText.text = score.ToString("0000");
+            scoreText.text = score.ToString();
     }
 
-    // ─── Star ───────────────────────────────────────────────
-
-    public void AddStar(int amount = 1)
+    /// <summary>Gọi từ LevelManager.Start() sau khi levelIndex đã sẵn sàng.</summary>
+    public void UpdateLevelUI(int levelIndex)
     {
-        star += amount;
-        UpdateStarUI();
-        SaveData();
+        if (levelText != null)
+            levelText.text = levelIndex.ToString();
     }
 
-    public int GetStar() => star;
-
-    private void UpdateStarUI()
-    {
-        if (starText != null)
-            starText.text = star.ToString();
-    }
 
     // ─── Level Unlock ─────────────────────────────────────────────────
 
@@ -106,7 +128,6 @@ public class GameManager : MonoBehaviour
         if (levelIndex > levelUnlocked)
         {
             levelUnlocked = levelIndex;
-            Debug.Log($"[GameManager] Mở khóa level {levelUnlocked}!");
             SaveData();
         }
     }
@@ -119,12 +140,37 @@ public class GameManager : MonoBehaviour
 
     public int GetLevelUnlocked() => levelUnlocked;
 
+    /// <summary>Lưu số sao (0-3) của 1 level cụ thể. Chỉ lưu nếu cao hơn lần trước.</summary>
+    public void SaveLevelStars(int levelIndex, int stars)
+    {
+        string key    = DataKey.LevelStar(levelIndex);
+        int    current = PlayerPrefs.GetInt(key, 0);
+        if (stars > current)
+        {
+            PlayerPrefs.SetInt(key, stars);
+            PlayerPrefs.Save();
+        }
+    }
+
+    /// <summary>Lấy số sao đã đạt của 1 level (0 nếu chưa chơi).</summary>
+    public static int GetLevelStars(int levelIndex)
+        => PlayerPrefs.GetInt(DataKey.LevelStar(levelIndex), 0);
+
     // ─── Lives ────────────────────────────────────────────────────────
 
     public int  GetLives()           => lives;
     public bool HasLives()           => lives > 0;
     public void LoseLife()           { lives = Mathf.Max(0, lives - 1); SaveData(); }
     public void AddLife(int amount = 1) { lives += amount; SaveData(); }
+
+    /// <summary>
+    /// Gọi khi player chết. Trừ mạng và hiển thị màn Defeat qua LevelManager.
+    /// </summary>
+    public void PlayerDied()
+    {
+        LoseLife();
+        LevelManager.Instance?.LevelFail();
+    }
 
     // ─── Save / Load ──────────────────────────────────────────────────
 
@@ -158,6 +204,6 @@ public class GameManager : MonoBehaviour
         SaveData();
         UpdateCoinUI();
         UpdateScoreUI();
-        UpdateStarUI();
     }
 }
+

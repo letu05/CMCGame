@@ -1,10 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 /// <summary>
-/// Gắn vào GameObject LevelCompletePanel.
+/// Gắn vào GameObject LevelCompletePanel (Victory).
 /// Tự cập nhật UI khi được SetActive(true) qua OnEnable().
+/// 
+/// Nút trong Inspector:
+///   - Nút Chơi Lại → OnClick gọi OnPlayAgainClicked()
+///   - Nút Về Menu  → OnClick gọi OnMainMenuClicked()
 /// </summary>
 public class LevelCompletePanel : MonoBehaviour
 {
@@ -68,4 +73,28 @@ public class LevelCompletePanel : MonoBehaviour
             highscoreText.text = best.ToString("N0");
         }
     }
+
+    // ─── Button Callbacks ─────────────────────────────────────────────────────
+
+    /// <summary>Nút LEVEL TIẾP THEO — load scene kế tiếp.</summary>
+    public void OnNextLevelClicked()
+    {
+        Time.timeScale = 1f;
+        LevelManager.Instance?.LoadNextLevel();
+    }
+
+    /// <summary>Nút CHƠI LẠI — restart đúng scene đang chơi.</summary>
+    public void OnPlayAgainClicked()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    /// <summary>Nút VỀ MENU — load scene 0 (Main Menu).</summary>
+    public void OnMainMenuClicked()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(1); // GameOptionLevel
+    }
 }
+

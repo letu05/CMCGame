@@ -95,13 +95,6 @@ public class BrickFlag : MonoBehaviour
     private void OpenGate()
     {
         if (openGateAnimator != null)
-        {
             openGateAnimator.SetTrigger(gateTrigger);
-            Debug.Log("[BrickFlag] Đã trigger mở cửa: " + gateTrigger);
-        }
-        else
-        {
-            Debug.LogWarning("[BrickFlag] Chưa gán openGateAnimator!");
-        }
     }
 }

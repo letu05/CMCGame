@@ -23,14 +23,7 @@ public class BulletPickup : MonoBehaviour
             playerFire = other.GetComponent<PlayerFire>();
 
         if (playerFire != null)
-        {
             playerFire.AddAmmo(bulletType, ammoAmount);
-            Debug.Log($"[BulletPickup] Nhặt +{ammoAmount} đạn {bulletType}");
-        }
-        else
-        {
-            Debug.LogWarning("[BulletPickup] Không tìm thấy PlayerFire trên player!");
-        }
 
         Destroy(gameObject); // Xoá item sau khi nhặt
     }

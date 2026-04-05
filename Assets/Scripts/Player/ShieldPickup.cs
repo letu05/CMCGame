@@ -19,14 +19,7 @@ public class ShieldPickup : MonoBehaviour
 
         PlayerPowerUp playerPowerUp = collision.gameObject.GetComponent<PlayerPowerUp>();
         if (playerPowerUp != null)
-        {
             playerPowerUp.ActivateShield();
-            Debug.Log("[ShieldPickup] Player nhặt shield!");
-        }
-        else
-        {
-            Debug.LogWarning("[ShieldPickup] Không tìm thấy PlayerPowerUp trên player!");
-        }
 
         Destroy(gameObject);
     }

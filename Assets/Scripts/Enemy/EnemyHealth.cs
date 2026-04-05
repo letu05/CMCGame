@@ -17,17 +17,11 @@ public class EnemyHealth : MonoBehaviour, IcanTakeDamage
     public void TakeDamage(int damage)
     {
         currentHp -= damage;
-        Debug.Log($"[EnemyHealth] {gameObject.name} bị {damage} sát thương. HP còn: {currentHp}");
-
-        if (currentHp <= 0)
-        {
-            Die();
-        }
+        if (currentHp <= 0) Die();
     }
 
     private void Die()
     {
-        Debug.Log($"[EnemyHealth] {gameObject.name} đã chết. +{score} điểm!");
         GameManager.Instance?.AddScore(score);
         Destroy(gameObject);
     }
@@ -35,7 +29,6 @@ public class EnemyHealth : MonoBehaviour, IcanTakeDamage
     /// <summary>Bị player giẫm lên đầu → chết ngay.</summary>
     public void Stomp()
     {
-        Debug.Log($"[EnemyHealth] {gameObject.name} bị giẫm → chết ngay!");
         Die();
     }
 }

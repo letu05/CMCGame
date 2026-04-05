@@ -37,7 +37,6 @@ public class PlayerPowerUp : MonoBehaviour
         {
             IsShielded = false;
             UpdateModel();
-            Debug.Log("[PlayerPowerUp] Shield hết hiệu lực.");
         }
     }
 
@@ -49,7 +48,6 @@ public class PlayerPowerUp : MonoBehaviour
         IsShielded  = true;
         shieldTimer = shieldDuration;
         UpdateModel();
-        Debug.Log($"[PlayerPowerUp] Shield bật! {shieldDuration}s");
     }
 
     // ─── PowerUp ──────────────────────────────────────────────────────────────
@@ -112,10 +110,7 @@ public class PlayerPowerUp : MonoBehaviour
         {
             // Shield đang bật → miễn sát thương
             if (IsShielded)
-            {
-                Debug.Log("[PlayerPowerUp] Shield đang bật → miễn sát thương.");
                 return;
-            }
 
             // Stomp: player rơi xuống + chạm đỉnh enemy
             Rigidbody2D rb        = GetComponent<Rigidbody2D>();
@@ -130,7 +125,6 @@ public class PlayerPowerUp : MonoBehaviour
                 {
                     enemyHealth.Stomp();
                     rb.linearVelocity = new Vector2(rb.linearVelocity.x, playerController.JumpForce * 0.7f);
-                    Debug.Log($"[PlayerPowerUp] Stomp '{collision.name}'!");
                 }
                 return;
             }
@@ -139,10 +133,7 @@ public class PlayerPowerUp : MonoBehaviour
             if (IsBig)
                 ShrinkSmall();
             else
-            {
-                Debug.Log("[PlayerPowerUp] Player nhỏ bị chạm → Die!");
                 playerHealth?.Die();
-            }
         }
     }
 }

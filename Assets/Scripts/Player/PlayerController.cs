@@ -32,69 +32,103 @@ private bool isSliding;
         animator = newAnimator;
     }
 
+    private void OnEnable()
+    {
+        if (PauseManager.Instance != null)
+        {
+            PauseManager.Instance.onPause.AddListener(FreezeMovement);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (PauseManager.Instance != null)
+        {
+            PauseManager.Instance.onPause.RemoveListener(FreezeMovement);
+        }
+    }
+
     private void Start()
 {
     rb = GetComponent<Rigidbody2D>();
     boxCollider = GetComponent<BoxCollider2D>();
     animator = GetComponentInChildren<Animator>();
-    JumpForce = jumpForce; // Khởi tạo property từ serialized field
+    JumpForce = jumpForce;
 }
+
+    /// <summary>Gọi khi game pause — zero velocity để nhân vật không trôi.</summary>
+    private void FreezeMovement()
+    {
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+    }
+
+    // ─── Input buffer (đọc trong Update, dùng trong FixedUpdate) ─────────────
+    private float moveInput;
+    private bool  jumpRequested;
 
 private void Update()
     {
-        isGrounded = IsGrounded(); // ← tính trước để Moved() dùng đúng frame này
+        // Không xử lý input khi game đang pause
+        if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
+            return;
 
-        if (isGrounded)
-        {
-            canDoubleJump = true;
-        }
+        // ── Đọc input ──────────────────────────────────────────────────────
+        moveInput = ControlFreak2.CF2Input.GetAxisRaw("Horizontal");
 
-        Moved();
+        if (ControlFreak2.CF2Input.GetButtonDown("Jump"))
+            jumpRequested = true;
 
-        if(ControlFreak2.CF2Input.GetButtonDown("Jump"))
-        {
-            
-            Jump();
-        }
-
+        // ── Animation cập nhật theo frame ──────────────────────────────────
         UpdateAnimations();
     }
 
+    private void FixedUpdate()
+    {
+        if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
+            return;
+
+        // ── Physics chạy đồng bộ với Fixed Timestep (50Hz) ────────────────
+        isGrounded = IsGrounded();
+
+        if (isGrounded)
+            canDoubleJump = true;
+
+        Moved();
+
+        if (jumpRequested)
+        {
+            Jump();
+            jumpRequested = false;
+        }
+    }
+
+
 private void Moved()
     {
-        
-        float moveInput = ControlFreak2.CF2Input.GetAxisRaw("Horizontal");
+        // moveInput đã được đọc trong Update() và lưu vào field
         
         // 2. Xác định xem có đang "đảo chiều ngược lại" khi đang có vận tốc hay không
         bool isChangingDirection = (moveInput > 0 && rb.linearVelocity.x < -0.1f) || (moveInput < 0 && rb.linearVelocity.x > 0.1f);
 
         // Bật trạng thái trượt nếu đang ở trên đất và bấm hướng ngược lại với đà di chuyển
-        if (isGrounded && isChangingDirection)
-        {
-            isSliding = true;
-        }
-        else
-        {
-            isSliding = false;
-        }
+        isSliding = isGrounded && isChangingDirection;
 
-        // 3. Gia tốc và Lực Phanh (Cảm giác đầm của Mario)
         if (isSliding)
         {
-            // Lực phanh gấp (Skid Deceleration). Dùng MoveTowards để phanh lết với khoảng cách đều, tạo cảm giác nặng
+            // Lực phanh gấp (Skid Deceleration)
             float skidDeceleration = 20f; 
-            float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, moveInput * moveSpeed, skidDeceleration * Time.deltaTime);
+            float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, moveInput * moveSpeed, skidDeceleration * Time.fixedDeltaTime);
             rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
         }
         else
         {
-            // Gia tốc chạy bình thường. Có thể nâng/hạ số 35f để nhân vật tăng tốc khởi hành nhanh hay chậm
+            // Gia tốc chạy bình thường
             float acceleration = 15f;
-            float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, moveInput * moveSpeed, acceleration * Time.deltaTime);
+            float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, moveInput * moveSpeed, acceleration * Time.fixedDeltaTime);
             rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
         }
 
-        
         if(moveInput > 0 && !isFacingRight || moveInput < 0 && isFacingRight)
         {
             Flip();

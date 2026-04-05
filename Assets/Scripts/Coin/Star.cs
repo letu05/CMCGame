@@ -30,8 +30,6 @@ public class Star : MonoBehaviour
 
         GameManager.Instance?.AddScore(scoreBonus);
         LevelManager.Instance?.CollectStar(starIndex);
-
-        Debug.Log($"[Star] Nhặt sao #{starIndex}! +{scoreBonus} điểm");
         Destroy(gameObject);
     }
 }
