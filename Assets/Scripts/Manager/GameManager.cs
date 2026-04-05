@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 /// <summary>
 /// Bộ não toàn game — tồn tại xuyên suốt mọi scene (DontDestroyOnLoad).
@@ -54,6 +55,13 @@ public class GameManager : MonoBehaviour
         scoreText = GameObject.Find(SCORE_TEXT_NAME)?.GetComponent<TMPro.TextMeshProUGUI>();
         coinText  = GameObject.Find(COIN_TEXT_NAME) ?.GetComponent<TMPro.TextMeshProUGUI>();
         levelText = GameObject.Find(LEVEL_TEXT_NAME)?.GetComponent<TMPro.TextMeshProUGUI>();
+
+        // Reset mạng về startLives mỗi khi vào level chơi (scene >= 2)
+        if (scene.buildIndex >= 2)
+        {
+            lives = startLives;
+            SaveData();
+        }
 
         UpdateCoinUI();
         UpdateScoreUI();
@@ -164,12 +172,33 @@ public class GameManager : MonoBehaviour
     public void AddLife(int amount = 1) { lives += amount; SaveData(); }
 
     /// <summary>
-    /// Gọi khi player chết. Trừ mạng và hiển thị màn Defeat qua LevelManager.
+    /// Gọi khi player chết. Trừ mạng.
+    /// - Còn mạng (lives > 0): respawn tại checkpoint gần nhất.
+    /// - Hết mạng             : hiển thị màn LevelFail.
     /// </summary>
     public void PlayerDied()
     {
         LoseLife();
-        LevelManager.Instance?.LevelFail();
+
+        if (lives > 0)
+        {
+            // Còn mạng → chờ animation chết xong rồi respawn
+            StartCoroutine(RespawnAfterDelay(1.5f));
+        }
+        else
+        {
+            // Hết mạng → thua màn
+            LevelManager.Instance?.LevelFail();
+        }
+    }
+
+    /// <summary>
+    /// Chờ die animation chạy xong rồi mới respawn tại checkpoint.
+    /// </summary>
+    private IEnumerator RespawnAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        CheckpointManager.Instance?.RespawnPlayer();
     }
 
     // ─── Save / Load ──────────────────────────────────────────────────

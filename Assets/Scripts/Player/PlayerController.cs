@@ -23,6 +23,7 @@ private bool isFacingRight = true;
 private bool isGrounded;
 private bool canDoubleJump;
 private bool isSliding;
+private bool isDead;
 
     public float JumpForce { get; set; }
 
@@ -30,6 +31,19 @@ private bool isSliding;
     public void SetAnimator(Animator newAnimator)
     {
         animator = newAnimator;
+    }
+
+    /// <summary>Gọi khi player chết — đóng băng input và velocity.</summary>
+    public void SetDead()
+    {
+        isDead = true;
+        if (rb != null) rb.linearVelocity = Vector2.zero;
+    }
+
+    /// <summary>Gọi khi respawn xong — cho phép di chuyển lại.</summary>
+    public void ClearDead()
+    {
+        isDead = false;
     }
 
     private void OnEnable()
@@ -54,6 +68,9 @@ private bool isSliding;
     boxCollider = GetComponent<BoxCollider2D>();
     animator = GetComponentInChildren<Animator>();
     JumpForce = jumpForce;
+
+    // Đăng ký với CheckpointManager để respawn hoạt động đúng
+    CheckpointManager.Instance?.RegisterPlayer(transform, rb);
 }
 
     /// <summary>Gọi khi game pause — zero velocity để nhân vật không trôi.</summary>
@@ -70,6 +87,7 @@ private bool isSliding;
 private void Update()
     {
         // Không xử lý input khi game đang pause
+        if (isDead) return;
         if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
             return;
 
@@ -85,6 +103,7 @@ private void Update()
 
     private void FixedUpdate()
     {
+        if (isDead) return;
         if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
             return;
 

@@ -93,6 +93,31 @@ public class PlayerPowerUp : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gọi từ CheckpointManager sau khi respawn.
+    /// Reset animator về trạng thái idle, xoá Die state.
+    /// </summary>
+    public void ResetAfterDeath()
+    {
+        // Xác định model đang dùng
+        GameObject activeModel = IsBig
+            ? (IsShielded ? modelBigShield   : modelBig)
+            : (IsShielded ? modelSmallShield : modelSmall);
+
+        if (activeModel != null)
+        {
+            Animator anim = activeModel.GetComponentInChildren<Animator>();
+            if (anim != null)
+            {
+                anim.Rebind();   // xoá toàn bộ trigger còn dư, trở về Entry state
+                anim.Update(0f); // force cập nhật ngay lập tức
+            }
+        }
+
+        // Sync lại model (đảm bảo đúng model hiện)
+        UpdateModel();
+    }
+
     // ─── Va chạm ──────────────────────────────────────────────────────────────
 
     private void OnTriggerEnter2D(Collider2D collision)

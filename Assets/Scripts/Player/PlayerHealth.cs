@@ -24,6 +24,11 @@ public class PlayerHealth : MonoBehaviour, IcanTakeDamage
     public void Die()
     {
         anim?.SetTrigger("Die");
+
+        // Đóng băng player trong lúc animation die chạy
+        PlayerController ctrl = GetComponentInParent<PlayerController>();
+        if (ctrl != null) ctrl.SetDead();
+
         GameManager.Instance?.PlayerDied();
     }
 }

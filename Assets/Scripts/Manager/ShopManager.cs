@@ -1,8 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// Xử lý logic mua hàng và lưu vật phẩm "chờ dùng" vào PlayerPrefs.
-/// Ammo / Shield được tiêu thụ khi màn chơi kế bắt đầu (PlayerFire.Start, PlayerPowerUp).
+/// Xử lý logic mua hàng.
+/// Nếu PlayerFire đang tồn tại trong scene → cộng đạn NGAY LẬP TỨC.
+/// Nếu không (đang ở menu) → lưu "pending" vào PlayerPrefs để PlayerFire.Start() tiêu thụ.
 /// </summary>
 public static class ShopManager
 {
@@ -21,12 +22,16 @@ public static class ShopManager
 
     /// <summary>
     /// Thực hiện giao dịch mua. Trả về true nếu thành công.
+    /// Ammo được cộng NGAY nếu PlayerFire có mặt trong scene.
     /// </summary>
     public static bool TryBuy(ShopItemData item)
     {
         if (!CanAfford(item)) return false;
 
         GameManager.Instance.SpendCoin(item.coinPrice);
+
+        // Tìm PlayerFire trong scene hiện tại (nếu đang trong level)
+        PlayerFire playerFire = Object.FindObjectOfType<PlayerFire>();
 
         switch (item.itemType)
         {
@@ -35,15 +40,24 @@ public static class ShopManager
                 break;
 
             case ShopItemType.BombAmmo:
-                AddPending(DataKey.PENDING_BOMB, item.amount);
+                if (playerFire != null)
+                    playerFire.AddAmmo(BulletType.Bomb, item.amount);
+                else
+                    AddPending(DataKey.PENDING_BOMB, item.amount);
                 break;
 
             case ShopItemType.DartAmmo:
-                AddPending(DataKey.PENDING_DART, item.amount);
+                if (playerFire != null)
+                    playerFire.AddAmmo(BulletType.Dart, item.amount);
+                else
+                    AddPending(DataKey.PENDING_DART, item.amount);
                 break;
 
             case ShopItemType.BoomerangAmmo:
-                AddPending(DataKey.PENDING_BOOMERANG, item.amount);
+                if (playerFire != null)
+                    playerFire.AddAmmo(BulletType.Boomerang, item.amount);
+                else
+                    AddPending(DataKey.PENDING_BOOMERANG, item.amount);
                 break;
 
             case ShopItemType.Shield:

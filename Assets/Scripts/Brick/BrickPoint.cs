@@ -71,25 +71,30 @@ public class BrickPoint : MonoBehaviour
 
     private void TriggerBrick(GameObject player)
     {
-        remaining--;
-        if (remaining <= 0)
-        {
-            isUsed = true;
-            if (questionMarkObject != null) questionMarkObject.SetActive(false);
-        }
-
         // ── Kiểm tra PowerUp ──────────────────────────────────────────────────
-        PlayerPowerUp powerUp   = player.GetComponent<PlayerPowerUp>();
+        PlayerPowerUp powerUp    = player.GetComponent<PlayerPowerUp>();
         bool          hasPowerUp = powerUp != null && (powerUp.IsBig || powerUp.IsShielded);
 
-        // Điểm: có powerup → cộng thêm bonus
-        int   totalScore = hasPowerUp ? scoreValue + scoreBonus : scoreValue;
-        Color color      = hasPowerUp ? textColorBonus : textColorNormal;
+        if (hasPowerUp)
+        {
+            // Có PowerUp → trừ lượt
+            remaining--;
+            bool shouldDeactivate = remaining <= 0;
+            if (shouldDeactivate) isUsed = true;
 
-        GameManager.Instance?.AddScore(totalScore);
+            int   totalScore = scoreValue + scoreBonus;
+            Color color      = textColorBonus;
 
-        StartCoroutine(BumpAnimation());
-        StartCoroutine(FloatTextEffect(totalScore, color));
+            GameManager.Instance?.AddScore(totalScore);
+            // Bắt đầu coroutine TRƯỚC khi deactivate — truyền cờ để ẩn sau animation
+            StartCoroutine(BumpAnimation(shouldDeactivate));
+            StartCoroutine(FloatTextEffect(totalScore, color));
+        }
+        else
+        {
+            // Đập thường → chỉ nảy lên xuống, KHÔNG cộng điểm, KHÔNG float text
+            StartCoroutine(BumpAnimation(false));
+        }
 
         if (hitSound != null)
             AudioSource.PlayClipAtPoint(hitSound, transform.position);
@@ -97,7 +102,7 @@ public class BrickPoint : MonoBehaviour
 
     // ─── Bump ─────────────────────────────────────────────────────────────────
 
-    private IEnumerator BumpAnimation()
+    private IEnumerator BumpAnimation(bool deactivateAfter = false)
     {
         isBumping = true;
         Vector3 upPos = originalPosition + Vector3.up * bumpHeight;
@@ -109,6 +114,10 @@ public class BrickPoint : MonoBehaviour
 
         transform.position = originalPosition;
         isBumping = false;
+
+        // Ẩn questionMark SAU KHI animation bump hoàn tất
+        if (deactivateAfter && questionMarkObject != null)
+            questionMarkObject.SetActive(false);
     }
 
     // ─── Floating Text ────────────────────────────────────────────────────────

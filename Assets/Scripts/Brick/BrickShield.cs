@@ -65,14 +65,11 @@ public class BrickShield : MonoBehaviour
     private void TriggerBrick()
     {
         remaining--;
-        if (remaining <= 0)
-        {
-            isUsed = true;
-            if (questionMarkObject != null) questionMarkObject.SetActive(false);
-        }
+        bool lastUse = remaining <= 0;
+        if (lastUse) isUsed = true;
 
         StartCoroutine(BumpAnimation());
-        StartCoroutine(SpawnShieldEffect());
+        StartCoroutine(SpawnShieldEffect(lastUse)); // truyền cờ để ẩn sau animation
 
         if (shieldSound != null)
             AudioSource.PlayClipAtPoint(shieldSound, transform.position);
@@ -96,16 +93,32 @@ public class BrickShield : MonoBehaviour
 
     // ─── Shield Pop ───────────────────────────────────────────────────────────
 
-    private IEnumerator SpawnShieldEffect()
+    private IEnumerator SpawnShieldEffect(bool hideVisual = false)
     {
+        // Ẩn shield tĩnh trên gạch ngay lập tức
+        if (hideVisual && questionMarkObject != null)
+            questionMarkObject.SetActive(false);
+
         if (shieldPrefab == null) yield break;
 
-        Vector3 spawnPos = originalPosition + Vector3.up * 0.6f;
+        // Spawn tại đỉnh gạch (originalPosition là tâm gạch, +1f lên trên đỉnh)
+        Vector3 spawnPos = originalPosition + Vector3.up * 1f;
         Vector3 topPos   = spawnPos + Vector3.up * popHeight;
+        Vector3 landPos  = spawnPos; // rơi về đỉnh gạch để player nhặt
 
-        // Spawn pickup — tắt collider tạm thời để làm hiệu ứng bay trước
         GameObject shield = Instantiate(shieldPrefab, spawnPos, Quaternion.identity);
-        Collider2D col    = shield.GetComponent<Collider2D>();
+
+        // ── FIX: Sorting Layer "<unknown layer>" → không render được ────────
+        // Reset về Default để đảm bảo sprite hiển thị
+        SpriteRenderer sr = shield.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.sortingLayerName = "Default";
+            sr.sortingOrder     = 5;
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
+        Collider2D col = shield.GetComponent<Collider2D>();
         if (col != null) col.enabled = false;
 
         // Bay lên
@@ -114,12 +127,11 @@ public class BrickShield : MonoBehaviour
         {
             t += Time.deltaTime / riseDuration;
             if (shield == null) yield break;
-            shield.transform.position = Vector3.Lerp(spawnPos, topPos, Mathf.SmoothStep(0,1,t));
+            shield.transform.position = Vector3.Lerp(spawnPos, topPos, Mathf.SmoothStep(0, 1, t));
             yield return null;
         }
 
-        // Rơi xuống về vị trí land
-        Vector3 landPos = spawnPos;
+        // Rơi xuống
         t = 0f;
         while (t < 1f)
         {

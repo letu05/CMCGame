@@ -191,7 +191,7 @@ MonoBehaviour:
   m_CellSize: {x: 245, y: 460}
   m_Spacing: {x: 50, y: 0}
   m_Constraint: 1
-  m_ConstraintCount: 2
+  m_ConstraintCount: 3
 --- !u!1 &2488539023390711702
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,6 +285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopPanel
   items:
   - {fileID: 11400000, guid: d58730d87cceb7e40b9ac2aec52f966c, type: 2}
+  - {fileID: 11400000, guid: b1709e25de661a2408b91f958fa896d4, type: 2}
+  - {fileID: 11400000, guid: 2d2f3e6aef03d0547b10595fe8a4f3b5, type: 2}
   itemCardPrefab: {fileID: 7975931300628833487, guid: 0af5321317b4a08429d5982ccd9269a5, type: 3}
   itemContainer: {fileID: 3965299461673676010}
   coinText: {fileID: 6114404078843547723}

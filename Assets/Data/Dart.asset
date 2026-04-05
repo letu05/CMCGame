@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 12174849a92a96340a2f86931b93f2e4, type: 3}
-  m_Name: Bomb
+  m_Name: Dart
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemData
-  itemName: Item
-  icon: {fileID: 21300000, guid: 6e6f7419f06000441ab85f5b92f03af1, type: 2}
-  description: nem vong cung
+  itemName: Dart
+  icon: {fileID: 21300000, guid: f6b1238afa8686647b959ab65d3ca894, type: 2}
+  description: phong thang
   coinPrice: 100
-  itemType: 1
-  amount: 5
+  itemType: 2
+  amount: 1
