@@ -23,6 +23,7 @@ public class EnemyHealth : MonoBehaviour, IcanTakeDamage
     private void Die()
     {
         GameManager.Instance?.AddScore(score);
+        AchievementManager.Instance?.RegisterEnemyKill();
         Destroy(gameObject);
     }
 

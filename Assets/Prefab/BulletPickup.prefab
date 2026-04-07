@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 50618682377417806}
   - component: {fileID: 61703437598541787}
   - component: {fileID: -251079602869361286}
-  m_Layer: 16
+  - component: {fileID: -5620333704011289106}
+  m_Layer: 0
   m_Name: BulletPickup
   m_TagString: CharacterBulletPickup
   m_Icon: {fileID: 0}
@@ -135,8 +136,24 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
-  returnDelay: 0.35
   rotateSpeed: 540
+  returnDelay: 0.35
+  owner: {fileID: 0}
+--- !u!114 &-5620333704011289106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709254077376921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45248553bec46b74188efe9d4f3e5a08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletPickup
+  bulletType: 0
+  ammoAmount: 5
+  playerTag: Player
 --- !u!1 &1730242686860875
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4099118695303065}
   - component: {fileID: 212243736805655561}
-  m_Layer: 16
+  m_Layer: 0
   m_Name: Sprite
   m_TagString: CharacterBulletPickup
   m_Icon: {fileID: 0}

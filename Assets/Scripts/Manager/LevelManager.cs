@@ -11,7 +11,7 @@ public class LevelManager : MonoBehaviour
     [Header("Level Settings")]
     [SerializeField] private int   levelIndex     = 1;
     [SerializeField] private float timeLimit      = 360f;
-    [SerializeField] private int   nextSceneIndex = -1;
+    [SerializeField] private int   nextSceneIndex = -1;// scene tiếp theo
 
     // ─── Timer UI ────────────────────────────────────────────────────
     [Header("Timer UI")]
@@ -58,6 +58,9 @@ public class LevelManager : MonoBehaviour
 
         // Reset bộ đếm quảng cáo cho màn mới
         AdManager.Instance?.ResetAdCountForNewLevel();
+
+        // Reset bộ đếm quái cho achievement
+        AchievementManager.Instance?.ResetKillCount();
     }
 
     private void Update()

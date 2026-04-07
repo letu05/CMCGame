@@ -1,9 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Gắn vào scene gameplay. Thực thi phần thưởng sau khi user xem quảng cáo xong.
-/// Yêu cầu: gán pointItemPrefab trong Inspector.
-/// </summary>
+
 public class AdRewardHandler : MonoBehaviour
 {
     public static AdRewardHandler Instance { get; private set; }
@@ -12,7 +9,7 @@ public class AdRewardHandler : MonoBehaviour
     [SerializeField] private int bombRewardAmount = 5;
 
     [Header("Thưởng PointItem — Spawn gần player")]
-    [SerializeField] private GameObject pointItemPrefab;       // ← GÁN PREFAB POINTITEM VÀO ĐÂY
+    [SerializeField] private GameObject pointItemPrefab;       
     [SerializeField] private Vector2    pointItemSpawnOffset = new Vector2(2f, 1f);
 
     [Header("Thưởng Coin / Vàng")]
@@ -80,6 +77,6 @@ public class AdRewardHandler : MonoBehaviour
     public void RewardCoin()
     {
         GameManager.Instance?.AddCoin(coinRewardAmount);
-        Debug.Log($"[AdReward] +{coinRewardAmount} Coin!");
+        
     }
 }

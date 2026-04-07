@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4618682377417806}
   - component: {fileID: 61703437598541787}
   - component: {fileID: 95243736805655561}
+  - component: {fileID: 7476179826811489309}
   m_Layer: 8
   m_Name: Brick_Bullet2
   m_TagString: Brick
@@ -102,6 +103,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7476179826811489309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709254077376921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7adfdbde5df72f440bce9d08c51ede4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BrickShield
+  useCount: 1
+  shieldPrefab: {fileID: 1709254077376921, guid: 7076f996689f57e408bb581508cdc6e0, type: 3}
+  shieldSound: {fileID: 8300000, guid: 668e4b4a2a082b443ad39f010cd8819f, type: 3}
+  questionMarkObject: {fileID: 0}
+  bumpHeight: 0.3
+  bumpUpDuration: 0.08
+  bumpDownDuration: 0.12
+  popHeight: 1.5
+  riseDuration: 0.35
+  fallDuration: 0.28
+  shieldLifetime: 5
 --- !u!1 &1724804207875695
 GameObject:
   m_ObjectHideFlags: 0

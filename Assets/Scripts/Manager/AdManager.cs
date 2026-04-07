@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using GoogleMobileAds.Api;
 
@@ -57,6 +58,14 @@ public class AdManager : MonoBehaviour
 
     private void InitializeAds()
     {
+        // Bật chế độ test để hiển thị quảng cáo thử nghiệm trên mọi thiết bị thật
+        // Xóa dòng này khi release chính thức lên store
+        var requestConfiguration = new RequestConfiguration
+        {
+            TestDeviceIds = new List<string> { AdRequest.TestDeviceSimulator }
+        };
+        MobileAds.SetRequestConfiguration(requestConfiguration);
+
         MobileAds.Initialize(initStatus =>
         {
             isInitialized = true;

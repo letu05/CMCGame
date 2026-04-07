@@ -1,17 +1,29 @@
 using UnityEngine;
 
 /// <summary>
-/// Gắn vào GameObject nhặt đạn trên sàn.
-/// Khi player chạm vào → cộng +5 đạn cho loại được chỉ định rồi huỷ item.
+/// Gắn vào prefab đạn nhặt được trên sàn hoặc do BrickBullet spawn ra.
+/// - Khi player chạm vào (Trigger) → cộng đạn rồi hủy item.
+/// - Nếu spawn từ BrickBullet: gọi SetupFromBrick() để set loại đạn/số lượng.
 /// </summary>
 public class BulletPickup : MonoBehaviour
 {
     [Header("Loại đạn và số lượng cộng thêm")]
-    [SerializeField] private BulletType bulletType  = BulletType.Dart;
-    [SerializeField] private int        ammoAmount  = 5;
+    [SerializeField] private BulletType bulletType = BulletType.Dart;
+    [SerializeField] private int        ammoAmount = 5;
 
     [Header("Layer của Player")]
-    [SerializeField] private string playerTag = "Player"; // Dùng tag thay vì layer cho đơn giản
+    [SerializeField] private string playerTag = "Player";
+
+   
+
+    
+    public void SetupFromBrick(BulletType type, int amount)
+    {
+        bulletType = type;
+        ammoAmount = amount;
+    }
+
+    // ─── Nhặt đạn ────────────────────────────────────────────────────────────
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -25,18 +37,19 @@ public class BulletPickup : MonoBehaviour
         if (playerFire != null)
             playerFire.AddAmmo(bulletType, ammoAmount);
 
-        Destroy(gameObject); // Xoá item sau khi nhặt
+        Destroy(gameObject);
     }
 
-    // Hiển thị icon loại đạn trong Scene view
+    // ─── Gizmos ──────────────────────────────────────────────────────────────
+
     private void OnDrawGizmos()
     {
         Gizmos.color = bulletType switch
         {
-            BulletType.Bomb      => new Color(1f, 0.4f, 0f),   // Cam
-            BulletType.Dart      => Color.cyan,                  // Xanh lam
-            BulletType.Boomerang => Color.green,                 // Xanh lá
-            _                   => Color.white
+            BulletType.Bomb      => new Color(1f, 0.4f, 0f),
+            BulletType.Dart      => Color.cyan,
+            BulletType.Boomerang => Color.green,
+            _                    => Color.white
         };
         Gizmos.DrawWireSphere(transform.position, 0.25f);
     }
