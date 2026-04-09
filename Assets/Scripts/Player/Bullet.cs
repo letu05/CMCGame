@@ -1,11 +1,6 @@
 using UnityEngine;
 
-// BulletType enum nằm trong BulletType.cs (cùng thư mục)
 
-/// <summary>
-/// Đặc tính đạn được SET SẴN trong từng prefab qua Inspector.
-/// PlayerFire chỉ gọi Init() sau khi spawn – không override bulletType.
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class Bullet : MonoBehaviour
 {
@@ -15,7 +10,7 @@ public class Bullet : MonoBehaviour
 
     [Header("Chung")]
     [SerializeField] private float speed    = 12f;
-    [SerializeField] private float lifetime = 4f;       // Tự huỷ sau n giây
+    [SerializeField] private float lifetime = 4f;       
     [SerializeField] private int   damage   = 1;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private LayerMask playerLayer;
@@ -180,7 +175,7 @@ public class Bullet : MonoBehaviour
             return;
         }
 
-        // ── Chạm đất → mất ngay (chỉ Bomb mới set groundLayer) ──────────────
+        
         if ((layer & groundLayer) != 0)
         {
             Destroy(gameObject);

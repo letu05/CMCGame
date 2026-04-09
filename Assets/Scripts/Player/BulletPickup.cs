@@ -23,8 +23,8 @@ public class BulletPickup : MonoBehaviour
         ammoAmount = amount;
     }
 
-    // ─── Nhặt đạn ────────────────────────────────────────────────────────────
-
+    
+    // nhặt đạn
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag(playerTag)) return;

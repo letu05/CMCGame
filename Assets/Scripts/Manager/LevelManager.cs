@@ -90,11 +90,7 @@ public class LevelManager : MonoBehaviour
 
     // ─── Star System ─────────────────────────────────────────────────
 
-    /// <summary>
-    /// Gọi từ Star.cs khi player nhặt sao.
-    /// starIndex chỉ dùng để tránh nhặt lại cùng 1 sao.
-    /// UI luôn fill từ TRÁI → PHẢI theo số sao đã nhặt.
-    /// </summary>
+    
     public void CollectStar(int index)
     {
         if (index < 1 || index > 3) return;
@@ -106,7 +102,7 @@ public class LevelManager : MonoBehaviour
 
     private void RefreshStarUI()
     {
-        // Đếm số sao đã nhặt → fill slot từ trái sang phải
+        
         int count = GetStarCount();
         SetStarImage(starImage1, count >= 1); // slot trái  : sáng nếu có ≥ 1 sao
         SetStarImage(starImage2, count >= 2); // slot giữa  : sáng nếu có ≥ 2 sao
@@ -135,7 +131,7 @@ public class LevelManager : MonoBehaviour
         isLevelOver = true;
 
         GameManager.Instance?.UnlockLevel(levelIndex);
-        GameManager.Instance?.SaveLevelStars(levelIndex, GetStarCount()); // ← lưu sao per-level
+        GameManager.Instance?.SaveLevelStars(levelIndex, GetStarCount());
 
         if (giftPanel != null)
             giftPanel.Show(runner: this, onDone: ShowVictoryPanel);
@@ -143,7 +139,6 @@ public class LevelManager : MonoBehaviour
             ShowVictoryPanel();
     }
 
-    /// <summary>Hiện UI Victory (LevelCompletePanel). Gọi trực tiếp hoặc qua callback từ GiftPanel.</summary>
     public void ShowVictoryPanel()
     {
         Time.timeScale = 0f;
@@ -160,7 +155,7 @@ public class LevelManager : MonoBehaviour
         if (levelFailPanel != null) levelFailPanel.SetActive(true);
     }
 
-    // ─── Scene Navigation ────────────────────────────────────────────
+    // Level tiep theo
 
     public void LoadNextLevel()
     {
@@ -180,7 +175,7 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
+// ve level option
     public void GoToMainMenu()
     {
         Time.timeScale = 1f;

@@ -38,7 +38,7 @@ public class PlayerFire : MonoBehaviour
 
     public BulletType? ActiveType => GetActiveType();
 
-    // ─── Unity ────────────────────────────────────────────────────────────
+    
 
     private void Start()
     {
