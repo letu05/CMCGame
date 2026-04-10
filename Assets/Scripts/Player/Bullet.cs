@@ -64,7 +64,7 @@ public class Bullet : MonoBehaviour
         {
             case BulletType.Bomb:      UpdateBomb();      break;
             case BulletType.Boomerang: UpdateBoomerang(); break;
-            // Dart: velocity set 1 lần, physics tự lo
+           
         }
     }
 

@@ -70,8 +70,7 @@ public class PlayerPowerUp : MonoBehaviour
         UpdateModel();
     }
 
-    // ─── Core ─────────────────────────────────────────────────────────────────
-
+    
     // Chỉ bật đúng 1 trong 4 model dựa vào (IsBig, IsShielded)
     private void UpdateModel()
     {
